@@ -1,11 +1,12 @@
 import { Configuration, PopupRequest } from "@azure/msal-browser";
 
-// MSAL configuration
+// MSAL configuration using environment variables
 export const msalConfig: Configuration = {
   auth: {
-    clientId: "25673ed4-bdc5-4927-9879-9a55ec5cea0a", // Replace with your app registration client ID
-    authority: "https://login.microsoftonline.com/d5981ff9-f284-4a8a-a91f-dba42e991bca", // Replace with your tenant ID or use "common" for multi-tenant
-    redirectUri: "https://lemon-field-009e4a910.2.azurestaticapps.net", // This should match your app registration redirect URI
+    clientId: process.env.REACT_APP_MSAL_CLIENT_ID || "", // Set in CI/CD or .env
+    authority: process.env.REACT_APP_MSAL_AUTHORITY || "", // Set in CI/CD or .env
+    redirectUri:
+      process.env.REACT_APP_MSAL_REDIRECT_URI || window.location.origin, // Set in CI/CD or .env
   },
   cache: {
     cacheLocation: "sessionStorage", // This configures where your cache will be stored
