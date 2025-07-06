@@ -1,7 +1,6 @@
 import { 
   IPublicClientApplication, 
   AccountInfo, 
-  AuthenticationResult,
   SilentRequest,
   InteractionRequiredAuthError
 } from '@azure/msal-browser';

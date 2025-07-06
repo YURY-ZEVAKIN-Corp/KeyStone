@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useTokenService } from '../services/useTokenService';
-import { useGraphApi, useTokenInspector, useApiService } from '../services/apiService';
+import { useGraphApi, useTokenInspector } from '../services/apiService';
 import './TokenDemo.css';
 
 const TokenDemo: React.FC = () => {
   const tokenService = useTokenService();
   const graphApi = useGraphApi();
   const tokenInspector = useTokenInspector();
-  const apiService = useApiService('https://jsonplaceholder.typicode.com'); // Demo API
   
   const [accessToken, setAccessToken] = useState<string>('');
   const [graphData, setGraphData] = useState<any>(null);

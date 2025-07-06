@@ -4,7 +4,7 @@ import Dashboard from './Dashboard';
 import './Login.css';
 
 const Login: React.FC = () => {
-  const { isAuthenticated, user, isLoading, login, logout } = useAuth();
+  const { isAuthenticated, user, isLoading, login } = useAuth();
 
   if (isLoading) {
     return (
