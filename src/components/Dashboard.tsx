@@ -12,7 +12,17 @@ const Dashboard: React.FC = () => {
       <header className="dashboard-header">
         <h1>Keystone Dashboard</h1>
         <div className="user-menu">
-          <span>Welcome, {user?.name || user?.username}</span>
+          <span>Welcome,{' '}
+            <button
+              className="user-name-btn"
+              onClick={() => setActiveTab('profile')}
+              aria-label="Show Profile"
+              tabIndex={0}
+              type="button"
+            >
+              {user?.name || user?.username}
+            </button>
+          </span>
           <button onClick={logout} className="logout-btn">
             Sign Out
           </button>
@@ -20,12 +30,6 @@ const Dashboard: React.FC = () => {
       </header>
       
       <nav className="dashboard-nav">
-        <button 
-          className={`nav-button ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          Profile
-        </button>
         <button 
           className={`nav-button ${activeTab === 'tokens' ? 'active' : ''}`}
           onClick={() => setActiveTab('tokens')}
