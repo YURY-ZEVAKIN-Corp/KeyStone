@@ -3,7 +3,7 @@ import { MsalProvider } from '@azure/msal-react';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { msalConfig } from '../authConfig';
 import Login from './Login';
-import './App.css';
+import styles from './App.module.css';
 
 /**
  * App is the root component that sets up MSAL authentication context and renders the main application UI.
@@ -19,7 +19,7 @@ const msalInstance = new PublicClientApplication(msalConfig);
 const App: React.FC = () => {
   return (
     <MsalProvider instance={msalInstance}>
-      <div className="App" role="main">
+      <div className={styles.App} role="main">
         <Login />
       </div>
     </MsalProvider>

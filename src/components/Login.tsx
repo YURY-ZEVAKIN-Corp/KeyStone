@@ -1,15 +1,15 @@
 import React from 'react';
 import { useAuth } from '../services/useAuth';
 import Dashboard from './Dashboard';
-import './Login.css';
+import styles from './Login.module.css';
 
 const Login: React.FC = () => {
   const { isAuthenticated, user, isLoading, login } = useAuth();
 
   if (isLoading) {
     return (
-      <div className="login-container">
-        <div className="loading">Loading...</div>
+      <div className={styles.loginContainer}>
+        <div className={styles.loading}>Loading...</div>
       </div>
     );
   }
@@ -19,11 +19,11 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="login-container">
-      <div className="login-card">
+    <div className={styles.loginContainer}>
+      <div className={styles.loginCard}>
         <h1>Keystone App</h1>
         <p>Please sign in with your Microsoft account to continue.</p>
-        <button className="login-button" onClick={login}>
+        <button className={styles.loginButton} onClick={login}>
           <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
             <rect x="12" y="1" width="9" height="9" fill="#00a4ef"/>
