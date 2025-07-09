@@ -14,3 +14,4 @@ Coding standards, domain knowledge, and preferences that AI should follow.
 - Use meaningful names for components, props, and variables.
 - Write clear and concise documentation for components and hooks.
 - Don't use inline styles; prefer CSS classes or styled-components.
+- use https://mui.com/material-ui/all-components/ for UI components.
