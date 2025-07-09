@@ -41,6 +41,9 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
         </header>
+        <div className="dashboard-body">
+        <div className="dashboard-nav">sss
+        </div>
         <main className="dashboard-content">
           <Routes>
             <Route path="/profile" element={<ProfilePage user={user} />} />
@@ -48,6 +51,7 @@ const Dashboard: React.FC = () => {
             <Route path="*" element={<Navigate to="/profile" replace />} />
           </Routes>
         </main>
+        </div>
       </div>
     </Router>
   );
