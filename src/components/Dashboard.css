@@ -45,36 +45,6 @@
   background: #a4262c;
 }
 
-.dashboard-nav {
-  background: white;
-  border-bottom: 1px solid #e9ecef;
-  padding: 0 2rem;
-  display: flex;
-  gap: 0;
-}
-
-.nav-button {
-  background: none;
-  border: none;
-  padding: 1rem 1.5rem;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.nav-button:hover {
-  color: #0078d4;
-  background: #f8f9fa;
-}
-
-.nav-button.active {
-  color: #0078d4;
-  border-bottom-color: #0078d4;
-}
-
 .dashboard-content {
   padding: 2rem;
   max-width: 800px;
