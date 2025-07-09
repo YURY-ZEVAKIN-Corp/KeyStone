@@ -1,12 +1,12 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-describe('App', () => {
-  it('renders without crashing and contains Login', () => {
-    const { getByRole } = render(<App />);
+describe("App", () => {
+  it("renders without crashing and contains Login", () => {
+    render(<App />);
     // Check for main role for accessibility
-    const main = getByRole('main');
+    const main = screen.getByRole("main");
     expect(main).toBeInTheDocument();
   });
 });

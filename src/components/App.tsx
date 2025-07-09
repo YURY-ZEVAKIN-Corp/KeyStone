@@ -1,9 +1,9 @@
-import React from 'react';
-import { MsalProvider } from '@azure/msal-react';
-import { PublicClientApplication } from '@azure/msal-browser';
-import { msalConfig } from '../authConfig';
-import Login from './Login';
-import styles from './App.module.css';
+import React from "react";
+import { MsalProvider } from "@azure/msal-react";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { msalConfig } from "../authConfig";
+import Login from "./Login";
+import styles from "./App.module.css";
 
 /**
  * App is the root component that sets up MSAL authentication context and renders the main application UI.

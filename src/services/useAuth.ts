@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useMsal } from '@azure/msal-react';
-import { AccountInfo } from '@azure/msal-browser';
-import { loginRequest } from '../authConfig';
+import { useState, useEffect } from "react";
+import { useMsal } from "@azure/msal-react";
+import { AccountInfo } from "@azure/msal-browser";
+import { loginRequest } from "../authConfig";
 
 export const useAuth = () => {
   const { instance, accounts } = useMsal();
@@ -27,7 +27,7 @@ export const useAuth = () => {
       setIsLoading(true);
       await instance.loginPopup(loginRequest);
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -38,7 +38,7 @@ export const useAuth = () => {
       setIsLoading(true);
       await instance.logoutPopup();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     } finally {
       setIsLoading(false);
     }

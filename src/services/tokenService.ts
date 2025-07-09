@@ -1,10 +1,10 @@
-import { 
-  IPublicClientApplication, 
-  AccountInfo, 
+import {
+  IPublicClientApplication,
+  AccountInfo,
   SilentRequest,
-  InteractionRequiredAuthError
-} from '@azure/msal-browser';
-import { apiScopes } from '../authConfig';
+  InteractionRequiredAuthError,
+} from "@azure/msal-browser";
+import { apiScopes } from "../authConfig";
 
 export class TokenService {
   private msalInstance: IPublicClientApplication;
@@ -17,12 +17,15 @@ export class TokenService {
    * Get access token silently (preferred method)
    * Falls back to interactive authentication if silent fails
    */
-  async getAccessToken(scopes: string[], account?: AccountInfo): Promise<string> {
+  async getAccessToken(
+    scopes: string[],
+    account?: AccountInfo,
+  ): Promise<string> {
     try {
       const activeAccount = account || this.msalInstance.getActiveAccount();
-      
+
       if (!activeAccount) {
-        throw new Error('No active account found');
+        throw new Error("No active account found");
       }
 
       const silentRequest: SilentRequest = {
@@ -30,12 +33,15 @@ export class TokenService {
         account: activeAccount,
       };
 
-      const response = await this.msalInstance.acquireTokenSilent(silentRequest);
+      const response =
+        await this.msalInstance.acquireTokenSilent(silentRequest);
       return response.accessToken;
     } catch (error) {
       if (error instanceof InteractionRequiredAuthError) {
         // Fallback to interactive authentication
-        console.log('Silent token acquisition failed, falling back to interactive');
+        console.log(
+          "Silent token acquisition failed, falling back to interactive",
+        );
         return this.getAccessTokenInteractive(scopes);
       }
       throw error;
@@ -52,7 +58,7 @@ export class TokenService {
       });
       return response.accessToken;
     } catch (error) {
-      console.error('Interactive token acquisition failed:', error);
+      console.error("Interactive token acquisition failed:", error);
       throw error;
     }
   }
@@ -84,17 +90,17 @@ export class TokenService {
    */
   decodeJwtToken(token: string): any {
     try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
-          .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(""),
       );
       return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Error decoding JWT token:', error);
+      console.error("Error decoding JWT token:", error);
       return null;
     }
   }
@@ -106,7 +112,7 @@ export class TokenService {
     try {
       const decoded = this.decodeJwtToken(token);
       if (!decoded || !decoded.exp) return true;
-      
+
       const currentTime = Math.floor(Date.now() / 1000);
       return decoded.exp < currentTime;
     } catch {
@@ -126,12 +132,8 @@ export class TokenService {
    */
   createAuthHeader(token: string): { [key: string]: string } {
     return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     };
   }
 }
-
-
-
-

@@ -1,6 +1,6 @@
-import { useTokenService } from './useTokenService';
-import { useState, useCallback } from 'react';
-import { useAuth } from './useAuth';
+import { useTokenService } from "./useTokenService";
+import { useState, useCallback } from "react";
+import { useAuth } from "./useAuth";
 
 // Example API service for making authenticated calls
 export class ApiService {
@@ -16,14 +16,14 @@ export class ApiService {
    * Generic API call with automatic token handling
    */
   async apiCall<T>(
-    endpoint: string, 
-    options: RequestInit = {}, 
-    scopes: string[] = ['User.Read']
+    endpoint: string,
+    options: RequestInit = {},
+    scopes: string[] = ["User.Read"],
   ): Promise<T> {
     try {
       // Get access token
       const token = await this.tokenService.getAccessToken(scopes);
-      
+
       // Create request with auth header
       const headers = {
         ...this.tokenService.createAuthHeader(token),
@@ -36,12 +36,14 @@ export class ApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `API call failed: ${response.status} ${response.statusText}`,
+        );
       }
 
       return await response.json();
     } catch (error) {
-      console.error('API call error:', error);
+      console.error("API call error:", error);
       throw error;
     }
   }
@@ -50,7 +52,7 @@ export class ApiService {
    * GET request
    */
   async get<T>(endpoint: string, scopes?: string[]): Promise<T> {
-    return this.apiCall<T>(endpoint, { method: 'GET' }, scopes);
+    return this.apiCall<T>(endpoint, { method: "GET" }, scopes);
   }
 
   /**
@@ -58,12 +60,12 @@ export class ApiService {
    */
   async post<T>(endpoint: string, data: any, scopes?: string[]): Promise<T> {
     return this.apiCall<T>(
-      endpoint, 
+      endpoint,
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(data),
-      }, 
-      scopes
+      },
+      scopes,
     );
   }
 
@@ -72,12 +74,12 @@ export class ApiService {
    */
   async put<T>(endpoint: string, data: any, scopes?: string[]): Promise<T> {
     return this.apiCall<T>(
-      endpoint, 
+      endpoint,
       {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(data),
-      }, 
-      scopes
+      },
+      scopes,
     );
   }
 
@@ -85,15 +87,15 @@ export class ApiService {
    * DELETE request
    */
   async delete<T>(endpoint: string, scopes?: string[]): Promise<T> {
-    return this.apiCall<T>(endpoint, { method: 'DELETE' }, scopes);
+    return this.apiCall<T>(endpoint, { method: "DELETE" }, scopes);
   }
 }
 
 // Hook for using API service
-export const useApiService = (baseUrl: string = 'https://your-api.com/api') => {
+export const useApiService = (baseUrl = "https://your-api.com/api") => {
   const tokenService = useTokenService();
   const apiService = new ApiService(baseUrl, tokenService);
-  
+
   return apiService;
 };
 
@@ -103,37 +105,50 @@ export const useGraphApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const callGraphApi = useCallback(async (endpoint: string) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const token = await tokenService.getGraphToken();
-      const headers = tokenService.createAuthHeader(token);
-      
-      const response = await fetch(`https://graph.microsoft.com/v1.0${endpoint}`, {
-        headers,
-      });
+  const callGraphApi = useCallback(
+    async (endpoint: string) => {
+      setLoading(true);
+      setError(null);
 
-      if (!response.ok) {
-        throw new Error(`Graph API call failed: ${response.status}`);
+      try {
+        const token = await tokenService.getGraphToken();
+        const headers = tokenService.createAuthHeader(token);
+
+        const response = await fetch(
+          `https://graph.microsoft.com/v1.0${endpoint}`,
+          {
+            headers,
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`Graph API call failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setLoading(false);
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        setLoading(false);
+        throw err;
       }
-
-      const data = await response.json();
-      setLoading(false);
-      return data;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      setLoading(false);
-      throw err;
-    }
-  }, [tokenService]);
+    },
+    [tokenService],
+  );
 
   // Specific Graph API methods
-  const getUserProfile = useCallback(() => callGraphApi('/me'), [callGraphApi]);
-  const getUserPhoto = useCallback(() => callGraphApi('/me/photo/$value'), [callGraphApi]);
-  const getUserEmails = useCallback(() => callGraphApi('/me/messages?$top=10'), [callGraphApi]);
+  const getUserProfile = useCallback(() => callGraphApi("/me"), [callGraphApi]);
+  const getUserPhoto = useCallback(
+    () => callGraphApi("/me/photo/$value"),
+    [callGraphApi],
+  );
+  const getUserEmails = useCallback(
+    () => callGraphApi("/me/messages?$top=10"),
+    [callGraphApi],
+  );
 
   return {
     callGraphApi,
@@ -155,10 +170,10 @@ export const useTokenInspector = () => {
     try {
       // Get ID token (contains user info)
       const idToken = tokenService.getIdToken();
-      
+
       // Get access token for Graph API
       const graphToken = await tokenService.getGraphToken();
-      
+
       const tokenInfo = {
         idToken: {
           raw: idToken,
@@ -172,13 +187,15 @@ export const useTokenInspector = () => {
         },
         user: user,
       };
-      
+
       setTokenInfo(tokenInfo);
-      console.log('Token Information:', tokenInfo);
+      console.log("Token Information:", tokenInfo);
       return tokenInfo;
     } catch (error) {
-      console.error('Error inspecting tokens:', error);
-      setTokenInfo({ error: error instanceof Error ? error.message : 'Unknown error' });
+      console.error("Error inspecting tokens:", error);
+      setTokenInfo({
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   }, [tokenService, user]);
 
