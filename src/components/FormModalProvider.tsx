@@ -1,4 +1,10 @@
-import React, { useState, useEffect, Suspense, ReactNode } from "react";
+import React, {
+  useState,
+  useEffect,
+  Suspense,
+  ReactNode,
+  useCallback,
+} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -65,13 +71,48 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
     useState<React.ComponentType<DynamicFormProps> | null>(null);
   const [buttonConfig, setButtonConfig] = useState<FormButtonConfig>({});
 
+  const loadFormComponent = useCallback(
+    async (formId: string) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const registryItem = getFormRegistryItem(formId);
+        const module = await registryItem.loader();
+
+        // Get button config from registry item or form state, with fallback to defaults
+        const config = formState?.buttonConfig ||
+          registryItem.buttonConfig || {
+            okButton: true,
+            cancelButton: true,
+            saveButton: false,
+            yesButton: false,
+            noButton: false,
+          };
+
+        setButtonConfig(config);
+        setFormComponent(() => module.default);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        console.error("Failed to load form component:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formState?.buttonConfig],
+  );
+
   useEffect(() => {
     const handleFormOpen = (state: FormModalState) => {
       setFormState(state);
       setOutputModel(state.inputModel);
       setError(null);
       setIsLoading(true);
-      loadFormComponent(state.formId!);
+      if (state.formId) {
+        loadFormComponent(state.formId);
+      }
     };
 
     const handleFormClose = () => {
@@ -89,36 +130,7 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
       FormService.off("form:open", handleFormOpen);
       FormService.off("form:close", handleFormClose);
     };
-  }, []);
-
-  const loadFormComponent = async (formId: string) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const registryItem = getFormRegistryItem(formId);
-      const module = await registryItem.loader();
-
-      // Get button config from registry item or form state, with fallback to defaults
-      const config = formState?.buttonConfig ||
-        registryItem.buttonConfig || {
-          okButton: true,
-          cancelButton: true,
-          saveButton: false,
-          yesButton: false,
-          noButton: false,
-        };
-
-      setButtonConfig(config);
-      setFormComponent(() => module.default);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      console.error("Failed to load form component:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [loadFormComponent]);
 
   const handleClose = () => {
     FormService.rejectForm();
@@ -194,7 +206,7 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
             <Suspense fallback={<FormLoading />}>
               <div data-form-instance>
                 <FormComponent
-                  formId={formState.formId!}
+                  formId={formState.formId || ""}
                   inputModel={formState.inputModel}
                   onChange={handleChange}
                   onSave={handleSave}

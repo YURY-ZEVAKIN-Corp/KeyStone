@@ -8,7 +8,10 @@ export class EventEmitter {
     if (!this.events.has(event)) {
       this.events.set(event, []);
     }
-    this.events.get(event)!.push(listener);
+    const listeners = this.events.get(event);
+    if (listeners) {
+      listeners.push(listener);
+    }
   }
 
   off(event: string, listener: EventListener): void {

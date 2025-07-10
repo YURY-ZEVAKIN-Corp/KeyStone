@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../services/useAuth";
 import TokenDemo from "./TokenDemo";
 import { FormDemo } from "./FormDemo";
+import { ToastDemo } from "./ToastDemo";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -63,6 +64,7 @@ const Dashboard: React.FC = () => {
     { text: "Profile", path: "/profile" },
     { text: "Tokens", path: "/tokens" },
     { text: "Forms Demo", path: "/forms" },
+    { text: "Toast Demo", path: "/toasts" },
   ];
 
   return (
@@ -158,6 +160,7 @@ const Dashboard: React.FC = () => {
               <Route path="/profile" element={<ProfilePage user={user} />} />
               <Route path="/tokens" element={<TokenDemo />} />
               <Route path="/forms" element={<FormDemo />} />
+              <Route path="/toasts" element={<ToastDemo />} />
               <Route path="*" element={<Navigate to="/profile" replace />} />
             </Routes>
           </Box>

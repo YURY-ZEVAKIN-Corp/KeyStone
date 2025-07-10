@@ -9,6 +9,7 @@ import {
   Chip,
 } from "@mui/material";
 import { useFormService } from "../hooks/useFormService";
+import { useToast } from "../hooks/useToast";
 
 interface UserModel {
   id?: string;
@@ -22,6 +23,7 @@ interface UserModel {
 
 export const FormDemo: React.FC = () => {
   const { openForm } = useFormService();
+  const toast = useToast();
   const [lastResult, setLastResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,9 +41,11 @@ export const FormDemo: React.FC = () => {
       );
 
       setLastResult(result);
+      toast.success(`User "${result.name}" created successfully!`);
       console.log("Новый пользователь создан:", result);
     } catch (err) {
       setError("User creation cancelled");
+      toast.warning("User creation was cancelled");
       console.log("User creation cancelled:", err);
     }
   };
@@ -60,9 +64,11 @@ export const FormDemo: React.FC = () => {
       });
 
       setLastResult(result);
+      toast.success(`User "${result.name}" updated successfully!`);
       console.log("Пользователь отредактирован:", result);
     } catch (err) {
       setError("User editing cancelled");
+      toast.warning("User editing was cancelled");
       console.log("User editing cancelled:", err);
     }
   };
@@ -80,9 +86,11 @@ export const FormDemo: React.FC = () => {
       });
 
       setLastResult(result);
+      toast.success(`Project "${result.name}" saved successfully!`);
       console.log("Проект отредактирован:", result);
     } catch (err) {
       setError("Редактирование проекта отменено");
+      toast.warning("Project editing was cancelled");
       console.log("Редактирование проекта отменено:", err);
     }
   };
@@ -93,6 +101,7 @@ export const FormDemo: React.FC = () => {
       await openForm("nonExistentForm", {});
     } catch (err) {
       setError("Форма не найдена");
+      toast.error("Form not found - this demonstrates error handling");
       console.error("Ошибка:", err);
     }
   };
@@ -118,9 +127,15 @@ export const FormDemo: React.FC = () => {
       );
 
       setLastResult(result);
+      if (result.result === "yes") {
+        toast.success("User deleted successfully");
+      } else {
+        toast.info("Deletion cancelled");
+      }
       console.log("Confirmation result:", result);
     } catch (err) {
       setError("Confirmation cancelled");
+      toast.warning("Confirmation was cancelled");
       console.log("Confirmation cancelled:", err);
     }
   };
@@ -146,9 +161,11 @@ export const FormDemo: React.FC = () => {
       );
 
       setLastResult(result);
+      toast.success("Project saved successfully!");
       console.log("Save only result:", result);
     } catch (err) {
       setError("Save operation cancelled");
+      toast.warning("Save operation was cancelled");
       console.log("Save operation cancelled:", err);
     }
   };
@@ -164,9 +181,11 @@ export const FormDemo: React.FC = () => {
       });
 
       setLastResult(result);
+      toast.info("Changes saved successfully");
       console.log("Default confirmation result:", result);
     } catch (err) {
       setError("Default confirmation cancelled");
+      toast.warning("Confirmation was cancelled");
       console.log("Default confirmation cancelled:", err);
     }
   };
