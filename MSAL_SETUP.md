@@ -29,6 +29,7 @@ Before running the app, you need to register it in Microsoft Entra ID:
 ### 2. Configure the Application
 
 After registration, note down:
+
 - **Application (client) ID**
 - **Directory (tenant) ID**
 
@@ -60,11 +61,13 @@ If you want to access Microsoft Graph API:
 ## 🚀 Running the Application
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Start the development server:
+
    ```bash
    npm start
    ```
@@ -97,13 +100,16 @@ src/
 ## 🛠️ Customization
 
 ### Styling
+
 - Update `Login.css` and `Dashboard.css` to match your brand
 - Modify the Microsoft logo in the login button if needed
 
 ### Scopes
+
 - Update `loginRequest.scopes` in `authConfig.ts` to request additional permissions
 
 ### Authority
+
 - Use `"common"` for multi-tenant applications
 - Use your specific tenant ID for single-tenant applications
 

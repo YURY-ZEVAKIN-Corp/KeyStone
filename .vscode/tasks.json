@@ -1,14 +1,12 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "shell",
-			"label": "Build React App for Production",
-			"command": "npm run build",
-			"group": "build",
-			"problemMatcher": [
-				"$tsc"
-			]
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Build React App for Production",
+      "command": "npm run build",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    }
+  ]
 }

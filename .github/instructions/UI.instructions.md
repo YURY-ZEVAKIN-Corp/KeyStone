@@ -1,6 +1,7 @@
 ---
-applyTo: '**'
+applyTo: "**"
 ---
+
 Coding standards, domain knowledge, and preferences that AI should follow.
 
 - Use functional components and hooks (e.g., useState, useEffect) for state management and side effects.

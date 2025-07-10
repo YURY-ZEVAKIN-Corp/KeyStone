@@ -3,6 +3,7 @@ import { MsalProvider } from "@azure/msal-react";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "../authConfig";
 import Login from "./Login";
+import { FormModalProvider } from "./FormModalProvider";
 import styles from "./App.module.css";
 
 /**
@@ -19,9 +20,11 @@ const msalInstance = new PublicClientApplication(msalConfig);
 const App: React.FC = () => {
   return (
     <MsalProvider instance={msalInstance}>
-      <div className={styles.App} role="main">
-        <Login />
-      </div>
+      <FormModalProvider>
+        <div className={styles.App} role="main">
+          <Login />
+        </div>
+      </FormModalProvider>
     </MsalProvider>
   );
 };

@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { useAuth } from "../services/useAuth";
 import TokenDemo from "./TokenDemo";
+import { FormDemo } from "./FormDemo";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -61,6 +62,7 @@ const Dashboard: React.FC = () => {
   const navItems = [
     { text: "Profile", path: "/profile" },
     { text: "Tokens", path: "/tokens" },
+    { text: "Forms Demo", path: "/forms" },
   ];
 
   return (
@@ -155,6 +157,7 @@ const Dashboard: React.FC = () => {
             <Routes>
               <Route path="/profile" element={<ProfilePage user={user} />} />
               <Route path="/tokens" element={<TokenDemo />} />
+              <Route path="/forms" element={<FormDemo />} />
               <Route path="*" element={<Navigate to="/profile" replace />} />
             </Routes>
           </Box>
