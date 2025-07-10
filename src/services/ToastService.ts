@@ -3,7 +3,6 @@ import {
   ToastMessage,
   ToastSeverity,
   ToastOptions,
-  ToastServiceEvents,
 } from "../types/toast.types";
 
 class ToastServiceClass extends EventEmitter {

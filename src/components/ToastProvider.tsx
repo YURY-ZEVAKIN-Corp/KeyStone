@@ -30,15 +30,24 @@ const severityMap: Record<ToastSeverity, AlertProps["severity"]> = {
 const ToastProvider: React.FC<ToastProviderProps> = ({
   children,
   maxToasts = 5,
-  anchorOrigin = { vertical: "top", horizontal: "right" },
+  anchorOrigin = { vertical: "bottom", horizontal: "right" },
 }) => {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (toasts.length > 0) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [toasts]);
 
   useEffect(() => {
     const handleShowToast = (toast: ToastMessage) => {
       setToasts((prevToasts) => {
         const updatedToasts = [...prevToasts, toast];
-        return updatedToasts.slice(-maxToasts);
+        return updatedToasts;
       });
     };
 
@@ -59,10 +68,13 @@ const ToastProvider: React.FC<ToastProviderProps> = ({
       ToastService.off("toast:hide", handleHideToast);
       ToastService.off("toast:clear", handleClearAll);
     };
-  }, [maxToasts]);
+  }, []);
 
-  const handleCloseToast = (id: string) => {
-    ToastService.hide(id);
+  const handleCloseToast = () => {
+    setOpen(false);
+    setTimeout(() => {
+      setToasts((prevToasts) => prevToasts.slice(1));
+    }, 200); // allow exit animation
   };
 
   return (
@@ -85,14 +97,14 @@ const ToastProvider: React.FC<ToastProviderProps> = ({
             pointerEvents: "none",
           }}
         >
-          {toasts.map((toast) => (
+          {toasts.length > 0 && (
             <Snackbar
-              key={toast.id}
-              open={true}
+              key={toasts[0].id}
+              open={open}
               autoHideDuration={
-                toast.autoHide !== false ? toast.duration : null
+                toasts[0].autoHide !== false ? toasts[0].duration : null
               }
-              onClose={() => handleCloseToast(toast.id)}
+              onClose={handleCloseToast}
               TransitionComponent={Slide}
               TransitionProps={
                 {
@@ -110,18 +122,18 @@ const ToastProvider: React.FC<ToastProviderProps> = ({
               }}
             >
               <Alert
-                severity={severityMap[toast.severity]}
+                severity={severityMap[toasts[0].severity]}
                 variant="filled"
-                onClose={() => handleCloseToast(toast.id)}
+                onClose={handleCloseToast}
                 sx={{
                   width: "100%",
                   pointerEvents: "auto",
                 }}
               >
-                {toast.message}
+                {toasts[0].message}
               </Alert>
             </Snackbar>
-          ))}
+          )}
         </Stack>
       </Portal>
     </>
