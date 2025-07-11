@@ -20,6 +20,7 @@ interface ButtonDemoModel {
   showSaveButton?: boolean;
   showYesButton?: boolean;
   showNoButton?: boolean;
+  disableCloseButton?: boolean;
 }
 
 const ButtonDemoForm: React.FC<DynamicFormProps> = ({
@@ -36,12 +37,22 @@ const ButtonDemoForm: React.FC<DynamicFormProps> = ({
     showSaveButton: buttonConfig?.saveButton || false,
     showYesButton: buttonConfig?.yesButton || false,
     showNoButton: buttonConfig?.noButton || false,
+    disableCloseButton: buttonConfig?.disableCloseButton || false,
     ...inputModel,
   });
 
   // Update parent component when data changes
   useEffect(() => {
-    onChange(formData);
+    onChange({
+      ...formData,
+      // propagate disableCloseButton to parent (FormModalProvider)
+      disableCloseButton: formData.disableCloseButton,
+      okButton: formData.showOkButton,
+      cancelButton: formData.showCancelButton,
+      saveButton: formData.showSaveButton,
+      yesButton: formData.showYesButton,
+      noButton: formData.showNoButton,
+    });
   }, [formData, onChange]);
 
   const handleChange = (field: keyof ButtonDemoModel, value: any) => {
@@ -135,6 +146,17 @@ const ButtonDemoForm: React.FC<DynamicFormProps> = ({
                 />
               }
               label="OK Button"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formData.disableCloseButton}
+                  onChange={(e) => {
+                    handleChange("disableCloseButton", e.target.checked);
+                  }}
+                />
+              }
+              label="Disable Close (X) Button"
             />
           </Box>
 

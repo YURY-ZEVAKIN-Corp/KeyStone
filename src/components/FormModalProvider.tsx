@@ -14,7 +14,9 @@ import {
   CircularProgress,
   Box,
   Typography,
+  IconButton, // Add IconButton
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close"; // Add CloseIcon import
 import { FormService } from "../services/FormService";
 import {
   FormModalState,
@@ -195,7 +197,26 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
           sx: { minHeight: 300 },
         }}
       >
-        <DialogTitle>{formState.formId}</DialogTitle>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {formState.formId}
+          {!buttonConfig.disableCloseButton && (
+            <IconButton
+              aria-label="close"
+              onClick={handleCancel}
+              edge="end"
+              size="small"
+              sx={{ ml: 2 }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+        </DialogTitle>
 
         <DialogContent>
           {isLoading && <FormLoading />}

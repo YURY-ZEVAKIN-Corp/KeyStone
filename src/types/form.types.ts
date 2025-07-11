@@ -6,6 +6,10 @@ export interface FormButtonConfig {
   saveButton?: boolean;
   yesButton?: boolean;
   noButton?: boolean;
+  /**
+   * If true, disables the close (X) button in the form modal.
+   */
+  disableCloseButton?: boolean;
 }
 
 export interface DynamicFormProps {
