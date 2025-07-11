@@ -10,6 +10,15 @@ jest.mock("@azure/msal-browser", () => ({
     return {};
   },
 }));
+jest.mock("../services/useAuth", () => ({
+  useAuth: () => ({
+    isAuthenticated: false,
+    user: null,
+    isLoading: false,
+    login: jest.fn(),
+    logout: jest.fn(),
+  }),
+}));
 
 test("renders Keystone App title and sign in button", () => {
   render(<App />);
