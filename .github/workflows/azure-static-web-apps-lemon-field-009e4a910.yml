@@ -24,7 +24,7 @@ jobs:
           submodules: true
           lfs: false
       - name: Install OIDC Client from Core Package
-        run: npm install eventemitter3 @actions/core@1.11.1 @actions/http-client
+        run: npm install eventemitter3@4.0.7 @actions/core@1.11.1 @actions/http-client
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
