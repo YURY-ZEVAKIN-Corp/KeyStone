@@ -1,7 +1,7 @@
-// Simple EventEmitter implementation for browser
+// Simple eventEmitter implementation for browser
 type EventListener = (...args: any[]) => void;
 
-export class EventEmitter {
+export class eventEmitter {
   private events: Map<string, EventListener[]> = new Map();
 
   on(event: string, listener: EventListener): void {

@@ -4,7 +4,7 @@ import { FormRegistry } from "../types/form.types";
 // Each form is loaded dynamically through React.lazy
 export const formRegistry: FormRegistry = {
   userEditForm: {
-    loader: () => import("../forms/UserEditForm"),
+    loader: () => import("../forms/userEditForm"),
     displayName: "User Editing",
     buttonConfig: {
       okButton: true,
@@ -15,7 +15,7 @@ export const formRegistry: FormRegistry = {
     },
   },
   projectEditForm: {
-    loader: () => import("../forms/ProjectEditForm"),
+    loader: () => import("../forms/projectEditForm"),
     displayName: "Project Editing",
     buttonConfig: {
       okButton: true,
@@ -26,7 +26,7 @@ export const formRegistry: FormRegistry = {
     },
   },
   confirmationForm: {
-    loader: () => import("../forms/ConfirmationForm"),
+    loader: () => import("../forms/confirmationForm"),
     displayName: "Confirmation Dialog",
     buttonConfig: {
       okButton: false,
@@ -37,7 +37,7 @@ export const formRegistry: FormRegistry = {
     },
   },
   buttonDemoForm: {
-    loader: () => import("../forms/ButtonDemoForm"),
+    loader: () => import("../forms/buttonDemoForm"),
     displayName: "Button Configuration Demo",
     buttonConfig: {
       okButton: true,

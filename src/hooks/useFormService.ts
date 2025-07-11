@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { FormService } from "../services/FormService";
+import { FormService } from "../services/formService";
 import { FormButtonConfig } from "../types/form.types";
 
 /**

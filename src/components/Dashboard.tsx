@@ -7,9 +7,9 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useAuth } from "../services/useAuth";
-import TokenDemo from "./TokenDemo";
-import { FormDemo } from "./FormDemo";
-import { ToastDemo } from "./ToastDemo";
+import TokenDemo from "./tokenDemo";
+import { FormDemo } from "./formDemo";
+import { ToastDemo } from "./toastDemo";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -23,7 +23,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { deepPurple } from "@mui/material/colors";
-import FormRouteDemo from "./FormRouteDemo";
+import FormRouteDemo from "./formRouteDemo";
 
 const drawerWidth = 220;
 

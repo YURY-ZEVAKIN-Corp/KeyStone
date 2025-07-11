@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FormService } from "../services/FormService";
+import { FormService } from "../services/formService";
 
 const FormRouteDemo: React.FC = () => {
   const { formType, formEntityId } = useParams();

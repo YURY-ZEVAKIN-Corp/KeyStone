@@ -1,11 +1,11 @@
-import { EventEmitter } from "../utils/EventEmitter";
+import { eventEmitter } from "../utils/eventEmitter";
 import {
   ToastMessage,
   ToastSeverity,
   ToastOptions,
 } from "../types/toast.types";
 
-class ToastServiceClass extends EventEmitter {
+class ToastServiceClass extends eventEmitter {
   private generateId(): string {
     return `toast-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   }

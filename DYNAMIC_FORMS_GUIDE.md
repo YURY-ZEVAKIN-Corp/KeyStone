@@ -40,7 +40,7 @@ src/
 ├── hooks/
 │   └── useFormService.ts          # Hook for working with forms
 └── utils/
-    └── EventEmitter.ts            # Simple EventEmitter
+    └── eventEmitter.ts            # Simple eventEmitter
 ```
 
 ## Usage

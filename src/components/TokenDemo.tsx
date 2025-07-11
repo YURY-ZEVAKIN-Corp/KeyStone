@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTokenService } from "../services/useTokenService";
 import { useGraphApi, useTokenInspector } from "../services/apiService";
-import styles from "./TokenDemo.module.css";
+import styles from "./tokenDemo.module.css";
 
 const TokenDemo: React.FC = () => {
   const tokenService = useTokenService();

@@ -1,4 +1,4 @@
-import { ToastService } from "../services/ToastService";
+import { ToastService } from "../services/toastService";
 import { ToastOptions } from "../types/toast.types";
 
 export const useToast = () => {

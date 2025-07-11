@@ -8,7 +8,7 @@ import {
   Stack,
   Portal,
 } from "@mui/material";
-import { ToastService } from "../services/ToastService";
+import { ToastService } from "../services/toastService";
 import { ToastMessage, ToastSeverity } from "../types/toast.types";
 
 interface ToastProviderProps {

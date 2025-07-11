@@ -14,7 +14,7 @@ I've successfully created a comprehensive toast service for showing messages, er
 
 ### 2. Toast Service (`src/services/ToastService.ts`)
 
-- Singleton service using EventEmitter pattern (consistent with your FormService)
+- Singleton service using eventEmitter pattern (consistent with your FormService)
 - Methods: `showSuccess()`, `showError()`, `showWarning()`, `showInfo()`, `clearAll()`
 - Automatic ID generation and default durations (errors stay longer)
 
@@ -115,7 +115,7 @@ const MyComponent = () => {
 
 ## Architecture Benefits
 
-1. **Consistent with existing patterns**: Uses same EventEmitter pattern as FormService
+1. **Consistent with existing patterns**: Uses same eventEmitter pattern as FormService
 2. **Type-safe**: Full TypeScript support with proper interfaces
 3. **Reusable**: Easy to use from any component via hook
 4. **Customizable**: Flexible options for different use cases

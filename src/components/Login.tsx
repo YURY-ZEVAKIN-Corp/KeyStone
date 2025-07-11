@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../services/useAuth";
-import Dashboard from "./Dashboard";
-import styles from "./Login.module.css";
+import Dashboard from "./dashboard";
+import styles from "./login.module.css";
 
 const Login: React.FC = () => {
   const { isAuthenticated, user, isLoading, login } = useAuth();

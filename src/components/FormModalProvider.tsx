@@ -17,13 +17,13 @@ import {
   IconButton, // Add IconButton
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close"; // Add CloseIcon import
-import { FormService } from "../services/FormService";
+import { FormService } from "../services/formService";
 import {
   FormModalState,
   DynamicFormProps,
   FormButtonConfig,
 } from "../types/form.types";
-import { getFormRegistryItem } from "../registry/FormRegistry";
+import { getFormRegistryItem } from "../registry/formRegistry";
 
 interface FormModalProviderProps {
   children: ReactNode;
