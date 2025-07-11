@@ -4,8 +4,8 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "../authConfig";
 import Login from "./login";
 import { FormModalProvider } from "./formModalProvider";
-import ToastProvider from "./toastProvider";
 import styles from "./app.module.css";
+import ToastProvider from "./toastProvider";
 
 /**
  * App is the root component that sets up MSAL authentication context and renders the main application UI.

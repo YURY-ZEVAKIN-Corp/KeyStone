@@ -1,5 +1,6 @@
+import React from "react";
 import { render, screen } from "@testing-library/react";
-import App from "../components/app";
+import App from "../components/App";
 
 jest.mock("@azure/msal-react", () => ({
   MsalProvider: (props) => <div>{props.children}</div>,
