@@ -23,6 +23,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { deepPurple } from "@mui/material/colors";
+import FormRouteDemo from "./FormRouteDemo";
 
 const drawerWidth = 220;
 
@@ -44,14 +45,14 @@ const ProfilePage: React.FC<{ user: any }> = ({ user }) => (
       }}
     >
       <Typography variant="h6">Your Profile</Typography>
-      <Typography>
-        <strong>Name:</strong> {user?.name || "Not available"}
+      <Typography sx={{ fontWeight: "bold" }}>
+        Name: {user?.name || "Not available"}
       </Typography>
-      <Typography>
-        <strong>Email:</strong> {user?.username}
+      <Typography sx={{ fontWeight: "bold" }}>
+        Email: {user?.username}
       </Typography>
-      <Typography>
-        <strong>Account ID:</strong> {user?.homeAccountId}
+      <Typography sx={{ fontWeight: "bold" }}>
+        Account ID: {user?.homeAccountId}
       </Typography>
     </Box>
   </Box>
@@ -65,6 +66,7 @@ const Dashboard: React.FC = () => {
     { text: "Tokens", path: "/tokens" },
     { text: "Forms Demo", path: "/forms" },
     { text: "Toast Demo", path: "/toasts" },
+    { text: "Form Route Demo", path: "/form/buttonDemoForm/preview" }, // Add demo page to menu
   ];
 
   return (
@@ -161,6 +163,10 @@ const Dashboard: React.FC = () => {
               <Route path="/tokens" element={<TokenDemo />} />
               <Route path="/forms" element={<FormDemo />} />
               <Route path="/toasts" element={<ToastDemo />} />
+              <Route
+                path="/form/:formType/:formEntityId"
+                element={<FormRouteDemo />}
+              />
               <Route path="*" element={<Navigate to="/profile" replace />} />
             </Routes>
           </Box>

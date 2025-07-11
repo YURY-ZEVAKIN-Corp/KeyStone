@@ -27,6 +27,10 @@ export interface FormModalState {
   resolve: ((value: any) => void) | null;
   reject: ((reason?: any) => void) | null;
   buttonConfig?: FormButtonConfig;
+  /**
+   * Unique identifier for this form instance
+   */
+  formEntityId: string;
 }
 
 export interface FormComponent {
