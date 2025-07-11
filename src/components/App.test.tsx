@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import App from "./App";
+import App from "./app";
 
 // Use React.FunctionComponent for the mock to avoid TSX errors
 jest.mock("@azure/msal-react", () => ({
