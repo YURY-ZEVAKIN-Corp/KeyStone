@@ -43,6 +43,21 @@ export class TokenService {
   }
 
   /**
+   * Validate and filter scopes array
+   * @param scopes Array of scope strings
+   * @returns Filtered array of valid scopes
+   */
+  private validateAndFilterScopes(scopes: string[]): string[] {
+    if (!scopes || !Array.isArray(scopes) || scopes.length === 0) {
+      return [];
+    }
+
+    return scopes.filter(
+      (scope) => scope && typeof scope === "string" && scope.trim().length > 0,
+    );
+  }
+
+  /**
    * Initialize the token refresh service
    */
   private initializeRefreshService(): void {
@@ -103,7 +118,15 @@ export class TokenService {
       return;
     }
 
-    const scopeKey = scopes.sort().join(",");
+    // Validate and filter scopes
+    const validScopes = this.validateAndFilterScopes(scopes);
+
+    if (validScopes.length === 0) {
+      console.warn("No valid scopes provided to scheduleTokenRefresh");
+      return;
+    }
+
+    const scopeKey = validScopes.sort().join(",");
 
     // Clear existing timer for these scopes
     if (this.refreshTimers.has(scopeKey)) {
@@ -117,19 +140,19 @@ export class TokenService {
     const refreshIntervalMs = minutesToMs(this.refreshConfig.refreshInterval);
 
     const timer = setTimeout(() => {
-      this.performScheduledRefresh(scopes);
+      this.performScheduledRefresh(validScopes);
     }, refreshIntervalMs);
 
     this.refreshTimers.set(scopeKey, timer);
 
     this.emitRefreshEvent({
       type: "refresh_scheduled",
-      scopes,
+      scopes: validScopes,
       timestamp: Date.now(),
     });
 
     console.log(
-      `Token refresh scheduled for scopes [${scopes.join(", ")}] in ${this.refreshConfig.refreshInterval} minutes`,
+      `Token refresh scheduled for scopes [${validScopes.join(", ")}] in ${this.refreshConfig.refreshInterval} minutes`,
     );
   }
 
@@ -207,11 +230,25 @@ export class TokenService {
     account: AccountInfo,
     timeoutMs?: number,
   ): Promise<AuthenticationResult> {
+    // Validate scopes parameter
+    const validScopes = this.validateAndFilterScopes(scopes);
+
+    if (validScopes.length === 0) {
+      throw new Error("No valid scopes provided for token refresh");
+    }
+
+    if (validScopes.length !== scopes.length) {
+      console.warn(
+        `Filtered out ${scopes.length - validScopes.length} invalid scopes. Valid scopes:`,
+        validScopes,
+      );
+    }
+
     const actualTimeoutMs =
       timeoutMs || this.refreshConfig.refreshTimeoutSeconds * 1000;
 
     const silentRequest: SilentRequest = {
-      scopes,
+      scopes: validScopes,
       account,
     };
 
@@ -233,15 +270,15 @@ export class TokenService {
       ]);
 
       // Update cache
-      const scopeKey = scopes.sort().join(",");
+      const scopeKey = validScopes.sort().join(",");
       this.tokenCache.set(scopeKey, {
         token: response.accessToken,
         expiresAt: response.expiresOn?.getTime() || 0,
-        scopes,
+        scopes: validScopes,
       });
 
       console.log(
-        `Token refreshed successfully for scopes: [${scopes.join(", ")}]`,
+        `Token refreshed successfully for scopes: [${validScopes.join(", ")}]`,
       );
       return response;
     } catch (error) {
@@ -278,8 +315,15 @@ export class TokenService {
    * Manually trigger token refresh for specific scopes
    */
   async refreshToken(scopes: string[]): Promise<string> {
+    // Validate scopes parameter
+    const validScopes = this.validateAndFilterScopes(scopes);
+
+    if (validScopes.length === 0) {
+      throw new Error("No valid scopes provided for token refresh");
+    }
+
     console.log(
-      `Starting manual token refresh for scopes: [${scopes.join(", ")}]`,
+      `Starting manual token refresh for scopes: [${validScopes.join(", ")}]`,
     );
 
     const activeAccount = this.msalInstance.getActiveAccount();
@@ -291,24 +335,27 @@ export class TokenService {
       // Emit refresh start event
       this.emitRefreshEvent({
         type: "refresh_scheduled",
-        scopes,
+        scopes: validScopes,
         timestamp: Date.now(),
       });
 
-      const response = await this.refreshTokenSilently(scopes, activeAccount);
+      const response = await this.refreshTokenSilently(
+        validScopes,
+        activeAccount,
+      );
 
       // Reschedule automatic refresh
-      this.scheduleTokenRefresh(scopes);
+      this.scheduleTokenRefresh(validScopes);
 
       // Emit success event
       this.emitRefreshEvent({
         type: "refresh_success",
-        scopes,
+        scopes: validScopes,
         timestamp: Date.now(),
       });
 
       console.log(
-        `Manual token refresh completed successfully for scopes: [${scopes.join(", ")}]`,
+        `Manual token refresh completed successfully for scopes: [${validScopes.join(", ")}]`,
       );
       return response.accessToken;
     } catch (error) {
@@ -317,7 +364,7 @@ export class TokenService {
       // Emit error event
       this.emitRefreshEvent({
         type: "refresh_error",
-        scopes,
+        scopes: validScopes,
         timestamp: Date.now(),
         error: error as Error,
       });
@@ -330,7 +377,14 @@ export class TokenService {
    * Get cached token info
    */
   getCachedTokenInfo(scopes: string[]): TokenInfo | null {
-    const scopeKey = scopes.sort().join(",");
+    // Validate and filter scopes
+    const validScopes = this.validateAndFilterScopes(scopes);
+
+    if (validScopes.length === 0) {
+      return null;
+    }
+
+    const scopeKey = validScopes.sort().join(",");
     return this.tokenCache.get(scopeKey) || null;
   }
 
@@ -397,6 +451,13 @@ export class TokenService {
     scopes: string[],
     account?: AccountInfo,
   ): Promise<string> {
+    // Validate scopes parameter
+    const validScopes = this.validateAndFilterScopes(scopes);
+
+    if (validScopes.length === 0) {
+      throw new Error("No valid scopes provided for token acquisition");
+    }
+
     try {
       const activeAccount = account || this.msalInstance.getActiveAccount();
 
@@ -405,18 +466,18 @@ export class TokenService {
       }
 
       // Check cache first
-      const cachedToken = this.getCachedTokenInfo(scopes);
+      const cachedToken = this.getCachedTokenInfo(validScopes);
       if (cachedToken && !this.shouldRefreshToken(cachedToken.token)) {
         // Schedule refresh if not already scheduled
-        const scopeKey = scopes.sort().join(",");
+        const scopeKey = validScopes.sort().join(",");
         if (!this.refreshTimers.has(scopeKey)) {
-          this.scheduleTokenRefresh(scopes);
+          this.scheduleTokenRefresh(validScopes);
         }
         return cachedToken.token;
       }
 
       const silentRequest: SilentRequest = {
-        scopes: scopes,
+        scopes: validScopes,
         account: activeAccount,
       };
 
@@ -424,16 +485,16 @@ export class TokenService {
         await this.msalInstance.acquireTokenSilent(silentRequest);
 
       // Update cache
-      const scopeKey = scopes.sort().join(",");
+      const scopeKey = validScopes.sort().join(",");
       this.tokenCache.set(scopeKey, {
         token: response.accessToken,
         expiresAt: response.expiresOn?.getTime() || 0,
-        scopes,
+        scopes: validScopes,
       });
 
       // Schedule automatic refresh if enabled
       if (this.refreshConfig.enabled) {
-        this.scheduleTokenRefresh(scopes);
+        this.scheduleTokenRefresh(validScopes);
       }
 
       return response.accessToken;
@@ -443,7 +504,7 @@ export class TokenService {
         console.log(
           "Silent token acquisition failed, falling back to interactive",
         );
-        return this.getAccessTokenInteractive(scopes);
+        return this.getAccessTokenInteractive(validScopes);
       }
       throw error;
     }
@@ -453,22 +514,31 @@ export class TokenService {
    * Get access token using interactive authentication (popup)
    */
   async getAccessTokenInteractive(scopes: string[]): Promise<string> {
+    // Validate scopes parameter
+    const validScopes = this.validateAndFilterScopes(scopes);
+
+    if (validScopes.length === 0) {
+      throw new Error(
+        "No valid scopes provided for interactive token acquisition",
+      );
+    }
+
     try {
       const response = await this.msalInstance.acquireTokenPopup({
-        scopes: scopes,
+        scopes: validScopes,
       });
 
       // Update cache
-      const scopeKey = scopes.sort().join(",");
+      const scopeKey = validScopes.sort().join(",");
       this.tokenCache.set(scopeKey, {
         token: response.accessToken,
         expiresAt: response.expiresOn?.getTime() || 0,
-        scopes,
+        scopes: validScopes,
       });
 
       // Schedule automatic refresh if enabled
       if (this.refreshConfig.enabled) {
-        this.scheduleTokenRefresh(scopes);
+        this.scheduleTokenRefresh(validScopes);
       }
 
       return response.accessToken;

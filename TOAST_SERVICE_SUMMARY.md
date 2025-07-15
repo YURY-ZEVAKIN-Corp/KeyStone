@@ -2,7 +2,7 @@
 
 ## Overview
 
-I've successfully created a comprehensive toast service for showing messages, errors, and warnings to users in your React application. The implementation follows your coding standards and uses Material-UI components.
+I've successfully created a comprehensive toast service for showing messages, errors, and warnings to users in your Keystone application. The implementation follows your coding standards and uses Material-UI components.
 
 ## Files Created
 

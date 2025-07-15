@@ -1,4 +1,4 @@
-# Keystone - React App with Microsoft Entra ID Authentication
+# Keystone - Keystone App with Microsoft Entra ID Authentication
 
 This React TypeScript application integrates Microsoft Entra ID (formerly Azure AD) authentication using MSAL (Microsoft Authentication Library).
 
