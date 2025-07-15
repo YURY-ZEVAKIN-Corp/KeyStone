@@ -485,7 +485,7 @@ export const FormDemo: React.FC = () => {
 
       <Paper sx={{ p: 3, bgcolor: "grey.50" }}>
         <Typography variant="h6" gutterBottom>
-          Пример использования в коде:
+          Code Usage Examples:
         </Typography>
 
         <Box
@@ -501,26 +501,91 @@ export const FormDemo: React.FC = () => {
             borderColor: "divider",
           }}
         >
-          {`// Использование FormService
+          {`// Using FormService directly
 import { FormService } from './services/FormService';
 
-// Открытие формы и обработка результата
-FormService.openForm('userEditForm', { name: 'John' })
-  .then(data => console.log('Saved!', data))
-  .catch(() => console.log('Cancelled'));
+// Opening a form with basic configuration
+const result = await FormService.openForm('userEditForm', { 
+  name: 'John', 
+  email: 'john@example.com' 
+});
 
-// Использование хука
+// Opening a form with custom button configuration
+const result = await FormService.openForm(
+  'confirmationForm', 
+  { title: 'Delete User', message: 'Are you sure?' },
+  { yesButton: true, noButton: true, okButton: false, cancelButton: false }
+);
+
+// Opening a form with custom formEntityId (useful for routing)
+const result = await FormService.openForm(
+  'userEditForm',
+  { id: '123', name: 'John Doe', email: 'john@example.com' },
+  undefined, // use default button config
+  'user-edit-123' // custom formEntityId
+);
+
+// Using the hook (recommended approach)
 import { useFormService } from './hooks/useFormService';
 
-const { openForm } = useFormService();
+const MyComponent = () => {
+  const { openForm, isFormOpen, getCurrentFormState } = useFormService();
 
-const handleEdit = async () => {
-  try {
-    const result = await openForm('userEditForm', userData);
-    // Обработка результата
-  } catch (error) {
-    // Форма была отменена
+  const handleCreateUser = async () => {
+    try {
+      const result = await openForm<Partial<UserModel>, UserModel>(
+        'userEditForm',
+        { name: '', email: '', role: 'user', isActive: true }
+      );
+      console.log('User created:', result);
+    } catch (error) {
+      console.log('Creation cancelled');
+    }
+  };
+
+  const handleEditUser = async () => {
+    try {
+      const result = await openForm<UserModel, UserModel>(
+        'userEditForm',
+        { id: '123', name: 'John Doe', email: 'john@example.com' },
+        undefined, // use default button config from registry
+        \`user-edit-\${userId}\` // custom formEntityId for routing
+      );
+      console.log('User updated:', result);
+    } catch (error) {
+      console.log('Editing cancelled');
+    }
+  };
+
+  // Confirmation form with custom buttons and formEntityId
+  const handleConfirmation = async () => {
+    try {
+      const result = await openForm(
+        'confirmationForm',
+        { 
+          title: 'Save Changes?',
+          message: 'Do you want to save changes before closing?',
+          severity: 'info'
+        },
+        { yesButton: true, noButton: true },
+        'save-confirmation' // formEntityId for navigation
+      );
+      
+      if (result.result === 'yes') {
+        // Save changes
+      }
+    } catch (error) {
+      console.log('Confirmation cancelled');
+    }
+  };
+
+  // Check current form state
+  const currentState = getCurrentFormState();
+  if (currentState) {
+    console.log('Current form ID:', currentState.formEntityId);
   }
+
+  return <div>...</div>;
 };`}
         </Box>
       </Paper>
