@@ -5,12 +5,15 @@ applyTo: "**"
 # KeyStone UI Development Instructions
 
 ## Repository Information
+
 - **GitHub URL:** https://github.com/YURY-ZEVAKIN-Corp/KeyStone
 
 ## Project Overview
+
 React TypeScript app with dynamic forms, MSAL auth, toast notifications, and Material-UI.
 
 ## Coding Standards
+
 - Use functional components and hooks
 - Follow atomic design principles
 - Use TypeScript for type safety

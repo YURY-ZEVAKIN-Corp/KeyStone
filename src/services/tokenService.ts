@@ -200,20 +200,37 @@ export class TokenService {
   }
 
   /**
-   * Refresh token silently
+   * Refresh token silently with timeout handling
    */
   private async refreshTokenSilently(
     scopes: string[],
     account: AccountInfo,
+    timeoutMs?: number,
   ): Promise<AuthenticationResult> {
+    const actualTimeoutMs =
+      timeoutMs || this.refreshConfig.refreshTimeoutSeconds * 1000;
+
     const silentRequest: SilentRequest = {
       scopes,
       account,
     };
 
     try {
-      const response =
-        await this.msalInstance.acquireTokenSilent(silentRequest);
+      // Add timeout wrapper around the MSAL request
+      const response = await Promise.race([
+        this.msalInstance.acquireTokenSilent(silentRequest),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () =>
+              reject(
+                new Error(
+                  `Token refresh timeout after ${actualTimeoutMs / 1000} seconds`,
+                ),
+              ),
+            actualTimeoutMs,
+          ),
+        ),
+      ]);
 
       // Update cache
       const scopeKey = scopes.sort().join(",");
@@ -223,6 +240,9 @@ export class TokenService {
         scopes,
       });
 
+      console.log(
+        `Token refreshed successfully for scopes: [${scopes.join(", ")}]`,
+      );
       return response;
     } catch (error) {
       if (error instanceof InteractionRequiredAuthError) {
@@ -231,6 +251,7 @@ export class TokenService {
           "Interactive authentication required - cannot refresh silently",
         );
       }
+      console.error("Token refresh failed:", error);
       throw error;
     }
   }
@@ -257,20 +278,50 @@ export class TokenService {
    * Manually trigger token refresh for specific scopes
    */
   async refreshToken(scopes: string[]): Promise<string> {
+    console.log(
+      `Starting manual token refresh for scopes: [${scopes.join(", ")}]`,
+    );
+
     const activeAccount = this.msalInstance.getActiveAccount();
     if (!activeAccount) {
       throw new Error("No active account found");
     }
 
     try {
+      // Emit refresh start event
+      this.emitRefreshEvent({
+        type: "refresh_scheduled",
+        scopes,
+        timestamp: Date.now(),
+      });
+
       const response = await this.refreshTokenSilently(scopes, activeAccount);
 
       // Reschedule automatic refresh
       this.scheduleTokenRefresh(scopes);
 
+      // Emit success event
+      this.emitRefreshEvent({
+        type: "refresh_success",
+        scopes,
+        timestamp: Date.now(),
+      });
+
+      console.log(
+        `Manual token refresh completed successfully for scopes: [${scopes.join(", ")}]`,
+      );
       return response.accessToken;
     } catch (error) {
       console.error("Manual token refresh failed:", error);
+
+      // Emit error event
+      this.emitRefreshEvent({
+        type: "refresh_error",
+        scopes,
+        timestamp: Date.now(),
+        error: error as Error,
+      });
+
       throw error;
     }
   }
@@ -309,6 +360,13 @@ export class TokenService {
     this.refreshTimers.clear();
     this.tokenCache.clear();
     this.refreshListeners.length = 0;
+  }
+
+  /**
+   * Get the active account
+   */
+  getActiveAccount(): AccountInfo | null {
+    return this.msalInstance.getActiveAccount();
   }
 
   /**

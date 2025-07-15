@@ -11,6 +11,7 @@ import TokenDemo from "./TokenDemo";
 import { FormDemo } from "./FormDemo";
 import { ToastDemo } from "./ToastDemo";
 import { TokenRefreshDemo } from "./TokenRefreshDemo";
+import { TokenRefreshTroubleshooting } from "./TokenRefreshTroubleshooting";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -66,6 +67,7 @@ const Dashboard: React.FC = () => {
     { text: "Profile", path: "/profile" },
     { text: "Tokens", path: "/tokens" },
     { text: "Token Refresh", path: "/token-refresh" },
+    { text: "Token Troubleshooting", path: "/token-troubleshooting" },
     { text: "Forms Demo", path: "/forms" },
     { text: "Toast Demo", path: "/toasts" },
     { text: "Form Route Demo", path: "/form/buttonDemoForm/preview" }, // Add demo page to menu
@@ -164,6 +166,10 @@ const Dashboard: React.FC = () => {
               <Route path="/profile" element={<ProfilePage user={user} />} />
               <Route path="/tokens" element={<TokenDemo />} />
               <Route path="/token-refresh" element={<TokenRefreshDemo />} />
+              <Route
+                path="/token-troubleshooting"
+                element={<TokenRefreshTroubleshooting />}
+              />
               <Route path="/forms" element={<FormDemo />} />
               <Route path="/toasts" element={<ToastDemo />} />
               <Route

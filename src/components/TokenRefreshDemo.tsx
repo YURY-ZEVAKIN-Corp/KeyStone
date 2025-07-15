@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTokenRefresh } from "../hooks/useTokenRefresh";
 import { useTokenService } from "../services/useTokenService";
 import { TokenRefreshStatus } from "./TokenRefreshStatus";
@@ -133,6 +134,30 @@ export const TokenRefreshDemo: React.FC = () => {
       <div style={{ marginBottom: "20px" }}>
         <h3>Refresh Status</h3>
         <TokenRefreshStatus showDetails={true} scopes={selectedScopes} />
+
+        {/* Show troubleshooting link if there are errors */}
+        {status.lastError && (
+          <div
+            style={{
+              marginTop: "10px",
+              padding: "10px",
+              backgroundColor: "#fff3cd",
+              border: "1px solid #ffeaa7",
+              borderRadius: "4px",
+              color: "#856404",
+            }}
+          >
+            <strong>⚠️ Token refresh error detected:</strong>{" "}
+            {status.lastError.message}
+            <br />
+            <Link
+              to="/token-troubleshooting"
+              style={{ color: "#007acc", textDecoration: "underline" }}
+            >
+              🔧 Run Troubleshooting Diagnostics
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Controls */}
@@ -194,9 +219,30 @@ export const TokenRefreshDemo: React.FC = () => {
             <button
               onClick={handleManualRefresh}
               disabled={status.isRefreshing}
-              style={{ padding: "8px 16px", fontSize: "14px" }}
+              style={{
+                padding: "8px 16px",
+                fontSize: "14px",
+                backgroundColor: status.isRefreshing ? "#f0f0f0" : "",
+                cursor: status.isRefreshing ? "not-allowed" : "pointer",
+              }}
             >
-              {status.isRefreshing ? "Refreshing..." : "Manual Refresh"}
+              {status.isRefreshing ? (
+                <>
+                  <span style={{ marginRight: "8px" }}>🔄</span>
+                  {status.refreshProgress || "Refreshing..."}
+                  {status.refreshStartTime && (
+                    <div style={{ fontSize: "10px", marginTop: "2px" }}>
+                      Started:{" "}
+                      {Math.floor(
+                        (Date.now() - status.refreshStartTime.getTime()) / 1000,
+                      )}
+                      s ago
+                    </div>
+                  )}
+                </>
+              ) : (
+                "Manual Refresh"
+              )}
             </button>
             <button
               onClick={handleScheduleRefresh}

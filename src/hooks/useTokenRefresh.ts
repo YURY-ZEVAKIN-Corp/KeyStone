@@ -8,6 +8,8 @@ export interface TokenRefreshStatus {
   lastError?: Error;
   refreshCount: number;
   nextRefresh?: Date;
+  refreshStartTime?: Date;
+  refreshProgress?: string;
 }
 
 export interface UseTokenRefreshOptions {
@@ -53,10 +55,25 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
 
         switch (event.type) {
           case "refresh_scheduled":
+            newStatus.isRefreshing = true;
+            newStatus.refreshStartTime = new Date(event.timestamp);
+            newStatus.refreshProgress = "Starting token refresh...";
+            newStatus.lastError = undefined;
+
             const config = tokenService.getRefreshConfig();
-            newStatus.nextRefresh = new Date(
-              Date.now() + config.refreshInterval * 60 * 1000,
-            );
+            if (
+              !newStatus.refreshStartTime ||
+              event.timestamp > (newStatus.refreshStartTime?.getTime() || 0)
+            ) {
+              // Only set next refresh for actual scheduling, not manual refresh start
+              const isManualRefresh =
+                Math.abs(event.timestamp - Date.now()) < 1000; // Within 1 second
+              if (!isManualRefresh) {
+                newStatus.nextRefresh = new Date(
+                  Date.now() + config.refreshInterval * 60 * 1000,
+                );
+              }
+            }
             break;
 
           case "refresh_success":
@@ -64,6 +81,8 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
             newStatus.lastRefresh = new Date(event.timestamp);
             newStatus.refreshCount = prevStatus.refreshCount + 1;
             newStatus.lastError = undefined;
+            newStatus.refreshProgress = undefined;
+            newStatus.refreshStartTime = undefined;
 
             // Calculate next refresh time
             const successConfig = tokenService.getRefreshConfig();
@@ -77,6 +96,8 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
           case "refresh_error":
             newStatus.isRefreshing = false;
             newStatus.lastError = event.error;
+            newStatus.refreshProgress = undefined;
+            newStatus.refreshStartTime = undefined;
 
             if (event.error) {
               onRefreshError?.(event.error, event.scopes);
@@ -106,7 +127,14 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
     async (refreshScopes?: string[]) => {
       const scopesToRefresh = refreshScopes || scopes;
 
-      setStatus((prev) => ({ ...prev, isRefreshing: true }));
+      // Set initial refreshing state immediately
+      setStatus((prev) => ({
+        ...prev,
+        isRefreshing: true,
+        refreshStartTime: new Date(),
+        refreshProgress: "Initiating manual refresh...",
+        lastError: undefined,
+      }));
 
       try {
         await tokenService.refreshToken(scopesToRefresh);
@@ -116,6 +144,8 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
           ...prev,
           isRefreshing: false,
           lastError: error as Error,
+          refreshProgress: undefined,
+          refreshStartTime: undefined,
         }));
         throw error;
       }
