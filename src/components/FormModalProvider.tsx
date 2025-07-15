@@ -190,7 +190,14 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
       {children}
       <Dialog
         open={formState.isOpen}
-        onClose={handleClose}
+        onClose={
+          /* For ButtonDemoForm, use dynamic config from outputModel, otherwise use static buttonConfig */
+          formState?.formId === "buttonDemoForm"
+            ? outputModel?.disableCloseButton
+            : buttonConfig.disableCloseButton
+              ? undefined
+              : handleClose
+        }
         maxWidth="md"
         fullWidth
         PaperProps={{
@@ -205,7 +212,10 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
           }}
         >
           {formState.formId}
-          {!buttonConfig.disableCloseButton && (
+          {/* For ButtonDemoForm, use dynamic config from outputModel, otherwise use static buttonConfig */}
+          {(formState?.formId === "buttonDemoForm"
+            ? !outputModel?.disableCloseButton
+            : !buttonConfig.disableCloseButton) && (
             <IconButton
               aria-label="close"
               onClick={handleCancel}

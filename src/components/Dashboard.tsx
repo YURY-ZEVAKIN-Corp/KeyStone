@@ -10,6 +10,7 @@ import { useAuth } from "../services/useAuth";
 import TokenDemo from "./TokenDemo";
 import { FormDemo } from "./FormDemo";
 import { ToastDemo } from "./ToastDemo";
+import { TokenRefreshDemo } from "./TokenRefreshDemo";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -64,6 +65,7 @@ const Dashboard: React.FC = () => {
   const navItems = [
     { text: "Profile", path: "/profile" },
     { text: "Tokens", path: "/tokens" },
+    { text: "Token Refresh", path: "/token-refresh" },
     { text: "Forms Demo", path: "/forms" },
     { text: "Toast Demo", path: "/toasts" },
     { text: "Form Route Demo", path: "/form/buttonDemoForm/preview" }, // Add demo page to menu
@@ -161,6 +163,7 @@ const Dashboard: React.FC = () => {
             <Routes>
               <Route path="/profile" element={<ProfilePage user={user} />} />
               <Route path="/tokens" element={<TokenDemo />} />
+              <Route path="/token-refresh" element={<TokenRefreshDemo />} />
               <Route path="/forms" element={<FormDemo />} />
               <Route path="/toasts" element={<ToastDemo />} />
               <Route

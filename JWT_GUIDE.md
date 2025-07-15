@@ -24,7 +24,94 @@ This guide explains how to retrieve and use JWT tokens from Microsoft Entra ID f
 - Managed automatically by MSAL
 - Long-lived
 
-## 🛠️ Implementation
+## � Automatic Token Refresh
+
+### Configuration
+
+The application now supports automatic token refresh with configurable intervals. Set these environment variables in your `.env` file:
+
+```bash
+# Token refresh interval in minutes (default: 45)
+REACT_APP_TOKEN_REFRESH_INTERVAL=45
+
+# Buffer time before expiry to trigger refresh in minutes (default: 5)
+REACT_APP_TOKEN_REFRESH_BUFFER=5
+
+# Enable/disable automatic refresh (default: true)
+REACT_APP_ENABLE_TOKEN_REFRESH=true
+```
+
+### Using Token Refresh Hook
+
+```typescript
+import { useTokenRefresh } from '../hooks/useTokenRefresh';
+
+const MyComponent = () => {
+  const {
+    status,
+    manualRefresh,
+    scheduleRefresh,
+    getConfig
+  } = useTokenRefresh({
+    scopes: ['User.Read'],
+    onRefreshSuccess: (scopes) => {
+      console.log('Token refreshed for:', scopes);
+    },
+    onRefreshError: (error, scopes) => {
+      console.error('Refresh failed:', error);
+    },
+  });
+
+  return (
+    <div>
+      <p>Refresh Count: {status.refreshCount}</p>
+      <p>Last Refresh: {status.lastRefresh?.toLocaleTimeString()}</p>
+      <button onClick={() => manualRefresh()}>
+        Manual Refresh
+      </button>
+    </div>
+  );
+};
+```
+
+### Token Refresh Status Component
+
+Display refresh status in your UI:
+
+```typescript
+import { TokenRefreshStatus } from '../components/TokenRefreshStatus';
+
+const MyComponent = () => (
+  <TokenRefreshStatus
+    showDetails={true}
+    scopes={['User.Read', 'Mail.Read']}
+  />
+);
+```
+
+### Enhanced Token Service
+
+The TokenService now includes automatic refresh scheduling:
+
+```typescript
+import { useTokenService } from "../services/useTokenService";
+
+const MyComponent = () => {
+  const tokenService = useTokenService();
+
+  const handleGetToken = async () => {
+    // Automatically schedules refresh when getting tokens
+    const token = await tokenService.getAccessToken(["User.Read"]);
+
+    // Check if token should be refreshed
+    if (tokenService.shouldRefreshToken(token)) {
+      await tokenService.refreshToken(["User.Read"]);
+    }
+  };
+};
+```
+
+## �🛠️ Implementation
 
 ### Token Service Setup
 
@@ -298,6 +385,43 @@ export const msalConfig: Configuration = {
 4. **"Invalid audience"**
    - Verify client ID in configuration
    - Check if token is for correct audience
+
+5. **Token refresh failing**
+   - Check if refresh is enabled in configuration
+   - Verify user is still authenticated
+   - Check browser console for MSAL errors
+   - Ensure sufficient permissions for silent token acquisition
+
+### Monitoring Token Refresh
+
+Enable detailed logging to monitor refresh behavior:
+
+```typescript
+// Add to your component to monitor refresh events
+const { status } = useTokenRefresh({
+  scopes: ["User.Read"],
+  onRefreshSuccess: (scopes) => {
+    console.log(
+      `✅ [${new Date().toISOString()}] Token refreshed successfully for scopes: ${scopes.join(", ")}`,
+    );
+  },
+  onRefreshError: (error, scopes) => {
+    console.error(
+      `❌ [${new Date().toISOString()}] Token refresh failed for scopes: ${scopes.join(", ")}`,
+      error,
+    );
+  },
+});
+
+// Check refresh status
+console.log("Refresh status:", {
+  isRefreshing: status.isRefreshing,
+  refreshCount: status.refreshCount,
+  lastRefresh: status.lastRefresh,
+  nextRefresh: status.nextRefresh,
+  lastError: status.lastError?.message,
+});
+```
 
 ## 📚 Additional Resources
 
