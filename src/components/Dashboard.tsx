@@ -26,6 +26,8 @@ import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { deepPurple } from "@mui/material/colors";
 import FormRouteDemo from "./FormRouteDemo";
+import PageDemo from "./PageDemo";
+import PageRouteDemo from "./PageRouteDemo";
 
 const drawerWidth = 220;
 
@@ -70,7 +72,8 @@ const Dashboard: React.FC = () => {
     { text: "Token Troubleshooting", path: "/token-troubleshooting" },
     { text: "Forms Demo", path: "/forms" },
     { text: "Toast Demo", path: "/toasts" },
-    { text: "Form Route Demo", path: "/form/buttonDemoForm/preview" }, // Add demo page to menu
+    { text: "Pages Demo", path: "/pages" },
+    { text: "Form Route Demo", path: "/form/buttonDemoForm/preview" },
   ];
 
   return (
@@ -172,9 +175,14 @@ const Dashboard: React.FC = () => {
               />
               <Route path="/forms" element={<FormDemo />} />
               <Route path="/toasts" element={<ToastDemo />} />
+              <Route path="/pages" element={<PageDemo />} />
               <Route
                 path="/form/:formType/:formEntityId"
                 element={<FormRouteDemo />}
+              />
+              <Route
+                path="/page/:pageType/:pageEntityId"
+                element={<PageRouteDemo />}
               />
               <Route path="*" element={<Navigate to="/profile" replace />} />
             </Routes>
