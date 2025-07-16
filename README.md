@@ -1,3 +1,21 @@
+# Project Goal
+
+This is the result of Sprint 0. I want to share best practices in Web Development and help people bootstrap their own products faster.
+Usually, all this work is done partially, step by step, during the process of creating system functionality according to the sprint backlog. Additionally, many technical and architectural tasks provide zero business value in the eyes of the Product Owner and Scrum Master.
+
+# Tech stack
+The project uses React for building user interfaces, JavaScript (ES6+) as the primary programming language, and Node.js for managing dependencies and scripts. It is bootstrapped with Create React App for rapid development and includes tools like Webpack, Babel, and ESLint for bundling, transpiling, and code linting. Testing is handled with Jest.
+
+## Main Libraries and Frameworks
+- **React** – UI library for building interactive user interfaces.
+- **JavaScript (ES6+)** – Primary programming language.
+- **Node.js** – Runtime for managing dependencies and scripts.
+- **Create React App** – Tool for bootstrapping React projects.
+- **Webpack** – Module bundler.
+- **Babel** – JavaScript transpiler.
+- **ESLint** – Linting tool for code quality.
+- **Jest** – Testing framework.
+
 # Getting Started with Create Keystone App
 
 This project was bootstrapped with [Create Keystone App](https://github.com/facebook/create-react-app).
