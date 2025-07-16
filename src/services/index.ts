@@ -17,30 +17,16 @@ export async function initializeServices(
   console.log("Initializing application services...");
 
   // Register TokenService first (other services may depend on it)
-  const tokenService = ServiceRegistry.registerService("TokenService", () =>
+  ServiceRegistry.registerService("TokenService", () =>
     createTokenService(msalInstance),
   );
 
   // Register all other services
-  const waitingService = ServiceRegistry.registerService(
-    "WaitingService",
-    createWaitingService,
-  );
-  const toastService = ServiceRegistry.registerService(
-    "ToastService",
-    createToastService,
-  );
-  const formService = ServiceRegistry.registerService(
-    "FormService",
-    createFormService,
-  );
-  const pageService = ServiceRegistry.registerService(
-    "PageService",
-    createPageService,
-  );
-  const apiService = ServiceRegistry.registerService("ApiService", () =>
-    createApiService(),
-  );
+  ServiceRegistry.registerService("WaitingService", createWaitingService);
+  ServiceRegistry.registerService("ToastService", createToastService);
+  ServiceRegistry.registerService("FormService", createFormService);
+  ServiceRegistry.registerService("PageService", createPageService);
+  ServiceRegistry.registerService("ApiService", () => createApiService());
 
   // Set up service event listeners for debugging (optional)
   if (process.env.NODE_ENV === "development") {
