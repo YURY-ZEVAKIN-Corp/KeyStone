@@ -22,7 +22,9 @@ import styles from "./App.module.css";
 // Create MSAL instance
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const ServiceInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ServiceInitializer: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { instance } = useMsal();
   const [servicesInitialized, setServicesInitialized] = useState(false);
 
@@ -46,7 +48,9 @@ const ServiceInitializer: React.FC<{ children: React.ReactNode }> = ({ children 
       <div className={styles.App} role="main">
         <div style={{ padding: "20px", textAlign: "center" }}>
           <h2>Initializing services...</h2>
-          <p>Please wait while the application services are being initialized.</p>
+          <p>
+            Please wait while the application services are being initialized.
+          </p>
         </div>
       </div>
     );
