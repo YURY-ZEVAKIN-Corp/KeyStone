@@ -5,6 +5,28 @@ KeyStone is more than just a project—it's the foundation for building modern w
 This is the result of Sprint 0. I want to share best practices in Web Development and help people bootstrap their own products faster.
 Usually, all this work is done partially, step by step, during the process of creating system functionality according to the sprint backlog. Additionally, many technical and architectural tasks provide zero business value in the eyes of the Product Owner and Scrum Master.
 
+# Deployment
+
+System deployed in Azure Static Web Apps and available on:
+
+https://lemon-field-009e4a910.2.azurestaticapps.net
+
+# User Access & Invitations
+
+## How to Request Access
+
+To request access to the KeyStone system:
+
+1. **Contact Administrator** - Reach out to the system administrator at [admin-email]
+2. **Provide Required Information** - Include your business email and intended use case
+3. **Wait for Invitation** - You'll receive an email invitation to join the system
+4. **Accept Invitation** - Click the link in the email to complete your registration
+
+## Authentication
+
+The system uses Microsoft Entra ID for secure authentication. Once invited, you'll use your organizational credentials to access the application.
+
+
 # Tech stack
 The project uses React for building user interfaces, JavaScript (ES6+) as the primary programming language, and Node.js for managing dependencies and scripts. It is bootstrapped with Create React App for rapid development and includes tools like Webpack, Babel, and ESLint for bundling, transpiling, and code linting. Testing is handled with Jest.
 
@@ -35,6 +57,7 @@ The project uses React for building user interfaces, JavaScript (ES6+) as the pr
 - **Linting & Formatting** – Automated code quality checks with ESLint and Prettier.
 - **User Authentication** – Secure user login and identity management using Microsoft Entra ID.
 - **Toast Messages** – Display brief notifications for user actions and system events.
+- **GitHub Actions CI/CD** - Build and deploy pipeline
 
 # Getting Started with Create Keystone App
 
@@ -106,3 +129,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
