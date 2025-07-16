@@ -1,7 +1,8 @@
 import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Box, Alert } from "@mui/material";
-import { PageService } from "../services/PageService";
+import { requireService } from "../services/ServiceRegistry";
+import type { PageServiceClass } from "../services/PageService";
 
 const PageRouteDemo: React.FC = () => {
   const { pageType, pageEntityId } = useParams();
@@ -16,7 +17,9 @@ const PageRouteDemo: React.FC = () => {
     );
   }
 
-  if (!PageService.pageExists(pageType)) {
+  const pageService = requireService<PageServiceClass>("PageService");
+
+  if (!pageService.pageExists(pageType)) {
     return (
       <Box sx={{ p: 3 }}>
         <Alert severity="error">
@@ -26,7 +29,7 @@ const PageRouteDemo: React.FC = () => {
     );
   }
 
-  const DynamicPage = React.lazy(PageService.getPageLoader(pageType));
+  const DynamicPage = React.lazy(pageService.getPageLoader(pageType));
 
   return (
     <Suspense

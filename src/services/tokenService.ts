@@ -11,6 +11,8 @@ import {
   minutesToMs,
   TokenRefreshConfig,
 } from "../config/tokenRefreshConfig";
+import { EventEmitter } from "../utils/EventEmitter";
+import { IService } from "./ServiceRegistry";
 
 export interface TokenInfo {
   token: string;
@@ -25,7 +27,8 @@ export interface TokenRefreshEvent {
   error?: Error;
 }
 
-export class TokenService {
+export class TokenService extends EventEmitter implements IService {
+  readonly serviceName = "TokenService";
   private msalInstance: IPublicClientApplication;
   private refreshConfig: TokenRefreshConfig;
   private refreshTimers: Map<string, NodeJS.Timeout> = new Map();
@@ -33,6 +36,7 @@ export class TokenService {
   private refreshListeners: Array<(event: TokenRefreshEvent) => void> = [];
 
   constructor(msalInstance: IPublicClientApplication) {
+    super();
     this.msalInstance = msalInstance;
     this.refreshConfig = getTokenRefreshConfig();
 
@@ -621,4 +625,12 @@ export class TokenService {
       "Content-Type": "application/json",
     };
   }
+}
+
+/**
+ * Factory function to create TokenService instance
+ * Note: This requires the MSAL instance to be passed in during initialization
+ */
+export function createTokenService(msalInstance: IPublicClientApplication): TokenService {
+  return new TokenService(msalInstance);
 }

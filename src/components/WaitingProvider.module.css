@@ -1,0 +1,75 @@
+/* WaitingProvider Component Styles */
+.waitingContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.overlay {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  pointer-events: all;
+}
+
+.inline {
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.waitingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.waitingItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .waitingContent {
+    gap: 16px;
+    padding: 24px;
+  }
+}
+
+/* Ensure proper stacking */
+.waitingContainer {
+  isolation: isolate;
+}
+
+/* Animation for container appearance */
+.waitingContainer {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

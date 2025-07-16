@@ -1,0 +1,312 @@
+/* WaitingFormDemoLauncher Component Styles */
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.container h2 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.container p {
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cardDescription {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.configDetails {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.configRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.configRow:last-child {
+  margin-bottom: 0;
+}
+
+.configLabel {
+  font-weight: 500;
+  color: #495057;
+  font-size: 12px;
+}
+
+.configValue {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.configValue.primary {
+  color: #007acc;
+}
+
+.configValue.secondary {
+  color: #6c757d;
+}
+
+.configValue.accent {
+  color: #28a745;
+}
+
+.configValue.success {
+  color: #28a745;
+}
+
+.configValue.fail {
+  color: #dc3545;
+}
+
+.launchButton {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primaryButton {
+  background-color: #007acc;
+  color: white;
+}
+
+.primaryButton:hover {
+  background-color: #005a9e;
+  transform: translateY(-1px);
+}
+
+.dangerButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.dangerButton:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.resultSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e9ecef;
+}
+
+.resultSection h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+}
+
+.resultCard {
+  background: #fff;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.successResult {
+  border-left: 4px solid #28a745;
+  background-color: #f8fff9;
+}
+
+.errorResult {
+  border-left: 4px solid #dc3545;
+  background-color: #fff8f8;
+}
+
+.resultStatus,
+.resultMessage,
+.resultAction {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.resultData {
+  margin-top: 12px;
+}
+
+.resultData pre {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-x: auto;
+  margin: 8px 0 0 0;
+}
+
+.infoSection {
+  background: #f0f7ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 24px;
+}
+
+.infoSection h3 {
+  margin: 0 0 12px 0;
+  color: #0066cc;
+}
+
+.infoSection ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #333;
+}
+
+.infoSection li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+  }
+
+  .configDetails {
+    padding: 10px;
+  }
+
+  .resultCard {
+    padding: 16px;
+  }
+
+  .infoSection {
+    padding: 16px;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .container h2 {
+    color: #f1f3f4;
+  }
+
+  .container p {
+    color: #bdc1c6;
+  }
+
+  .card {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #f1f3f4;
+  }
+
+  .cardTitle {
+    color: #f1f3f4;
+  }
+
+  .cardDescription {
+    color: #cbd5e0;
+  }
+
+  .configDetails {
+    background: #1a202c;
+    border-color: #2d3748;
+  }
+
+  .configLabel {
+    color: #a0aec0;
+  }
+
+  .resultCard {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #f1f3f4;
+  }
+
+  .successResult {
+    background-color: #1a2e1a;
+  }
+
+  .errorResult {
+    background-color: #2e1a1a;
+  }
+
+  .resultData pre {
+    background: #1a202c;
+    border-color: #2d3748;
+    color: #e2e8f0;
+  }
+
+  .infoSection {
+    background: #1e2a3a;
+    border-color: #2d4a6b;
+    color: #f1f3f4;
+  }
+
+  .infoSection h3 {
+    color: #66b3ff;
+  }
+
+  .infoSection li {
+    color: #e2e8f0;
+  }
+}

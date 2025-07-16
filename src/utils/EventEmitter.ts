@@ -31,6 +31,14 @@ export class EventEmitter {
     }
   }
 
+  once(event: string, listener: EventListener): void {
+    const onceWrapper = (...args: any[]) => {
+      this.off(event, onceWrapper);
+      listener(...args);
+    };
+    this.on(event, onceWrapper);
+  }
+
   removeAllListeners(event?: string): void {
     if (event) {
       this.events.delete(event);

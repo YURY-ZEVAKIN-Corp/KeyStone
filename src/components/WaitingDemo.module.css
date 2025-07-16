@@ -1,0 +1,141 @@
+/* WaitingDemo Component Styles */
+.container {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.container h2 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.container p {
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.button {
+  padding: 12px 16px;
+  border: 1px solid #007acc;
+  background-color: #007acc;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: #005a9e;
+  border-color: #005a9e;
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.clearButton {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.clearButton:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+.info {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.info h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.codeExample {
+  margin-bottom: 24px;
+}
+
+.codeExample:last-child {
+  margin-bottom: 0;
+}
+
+.codeExample h4 {
+  color: #495057;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.codeExample pre {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 16px;
+  border-radius: 6px;
+  font-family: "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: auto;
+  margin: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .buttonGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .info {
+    padding: 16px;
+  }
+
+  .codeExample pre {
+    font-size: 12px;
+    padding: 12px;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .container h2 {
+    color: #f1f3f4;
+  }
+
+  .container p {
+    color: #bdc1c6;
+  }
+
+  .info {
+    background-color: #2d3748;
+    border-color: #4a5568;
+  }
+
+  .info h3 {
+    color: #f1f3f4;
+  }
+
+  .codeExample h4 {
+    color: #cbd5e0;
+  }
+}

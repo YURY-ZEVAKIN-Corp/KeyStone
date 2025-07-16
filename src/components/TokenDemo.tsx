@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { useTokenService } from "../services/useTokenService";
-import { useGraphApi, useTokenInspector } from "../services/apiService";
+import { useApiService } from "../hooks/useServices";
 import styles from "./TokenDemo.module.css";
 
 const TokenDemo: React.FC = () => {
   const tokenService = useTokenService();
-  const graphApi = useGraphApi();
-  const tokenInspector = useTokenInspector();
-
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [graphData, setGraphData] = useState<any>(null);
-  const [demoApiData, setDemoApiData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const apiService = useApiService();
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [profileData, setProfileData] = useState<any>(null);
+  const [emailData, setEmailData] = useState<any>(null);
+  const [tokenInfo, setTokenInfo] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGetAccessToken = async () => {
+    if (!tokenService) return;
+
     try {
-      setLoading(true);
+      setProfileLoading(true);
       const token = await tokenService.getGraphToken();
-      setAccessToken(token);
+      setTokenInfo({ accessToken: token });
       console.log("Access Token:", token);
 
       // Decode and log token claims
@@ -25,53 +27,73 @@ const TokenDemo: React.FC = () => {
       console.log("Token Claims:", claims);
     } catch (error) {
       console.error("Error getting access token:", error);
-      alert("Error getting access token. Check console for details.");
+      setError("Error getting access token. Check console for details.");
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
   };
 
   const handleCallGraphApi = async () => {
+    if (!apiService) return;
+
     try {
-      setLoading(true);
-      const userData = await graphApi.getUserProfile();
-      setGraphData(userData);
+      setProfileLoading(true);
+      setError(null);
+      const userData = await apiService.getUserProfile();
+      setProfileData(userData);
       console.log("Graph API Response:", userData);
     } catch (error) {
       console.error("Error calling Graph API:", error);
-      alert("Error calling Graph API. Check console for details.");
+      setError("Error calling Graph API. Check console for details.");
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
   };
 
   const handleCallDemoApi = async () => {
+    if (!apiService) return;
+
     try {
-      setLoading(true);
-      // This will fail gracefully since jsonplaceholder doesn't expect auth
-      // but demonstrates how to make authenticated calls to your APIs
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/posts/1",
-      );
-      const data = await response.json();
-      setDemoApiData(data);
+      setEmailLoading(true);
+      setError(null);
+      // Demo API call - using emails endpoint as example
+      const data = await apiService.getUserEmails();
+      setEmailData(data);
       console.log("Demo API Response:", data);
     } catch (error) {
       console.error("Error calling demo API:", error);
-      alert("Error calling demo API. Check console for details.");
+      setError("Error calling demo API. Check console for details.");
     } finally {
-      setLoading(false);
+      setEmailLoading(false);
     }
   };
 
   const handleInspectTokens = () => {
-    tokenInspector.inspectCurrentTokens();
+    if (!tokenService) return;
+
+    try {
+      const idToken = tokenService.getIdToken();
+
+      const tokenInformation = {
+        idToken: {
+          raw: idToken,
+          decoded: idToken ? tokenService.decodeJwtToken(idToken) : null,
+        },
+      };
+
+      setTokenInfo(tokenInformation);
+      console.log("Token Information:", tokenInformation);
+    } catch (error) {
+      console.error("Error inspecting tokens:", error);
+      setError("Error inspecting tokens. Check console for details.");
+    }
   };
 
   const copyTokenToClipboard = () => {
-    if (accessToken) {
-      navigator.clipboard.writeText(accessToken);
-      alert("Token copied to clipboard!");
+    const token = tokenInfo?.accessToken?.raw || tokenInfo?.idToken?.raw;
+    if (token) {
+      navigator.clipboard.writeText(token);
+      setError("Token copied to clipboard!");
     }
   };
 
@@ -80,21 +102,23 @@ const TokenDemo: React.FC = () => {
       <h2>JWT Token Demo</h2>
       <p>This demo shows how to retrieve and use JWT tokens for API calls.</p>
 
+      {error && <div className={styles.error}>{error}</div>}
+
       <div className={styles.demoSection}>
         <h3>1. Get Access Token</h3>
         <button
           onClick={handleGetAccessToken}
-          disabled={loading}
+          disabled={profileLoading}
           className={styles.demoButton}
         >
-          {loading ? "Loading..." : "Get Graph API Token"}
+          {profileLoading ? "Loading..." : "Get Graph API Token"}
         </button>
 
-        {accessToken && (
+        {tokenInfo?.accessToken && (
           <div className={styles.tokenDisplay}>
             <h4>Access Token:</h4>
             <textarea
-              value={accessToken}
+              value={tokenInfo.accessToken}
               readOnly
               rows={4}
               className={styles.tokenTextarea}
@@ -113,37 +137,35 @@ const TokenDemo: React.FC = () => {
         <h3>2. Call Microsoft Graph API</h3>
         <button
           onClick={handleCallGraphApi}
-          disabled={loading}
+          disabled={profileLoading}
           className={styles.demoButton}
         >
-          {loading ? "Loading..." : "Get My Profile"}
+          {profileLoading ? "Loading..." : "Get My Profile"}
         </button>
 
-        {graphData && (
+        {profileData && (
           <div className={styles.apiResponse}>
             <h4>Graph API Response:</h4>
-            <pre>{JSON.stringify(graphData, null, 2)}</pre>
+            <pre>{JSON.stringify(profileData, null, 2)}</pre>
           </div>
         )}
       </div>
 
       <div className={styles.demoSection}>
         <h3>3. Call External API (Demo)</h3>
-        <p>
-          Example of calling an external API (this one doesn't require auth)
-        </p>
+        <p>Example of calling an external API (emails endpoint)</p>
         <button
           onClick={handleCallDemoApi}
-          disabled={loading}
+          disabled={emailLoading}
           className={styles.demoButton}
         >
-          {loading ? "Loading..." : "Call Demo API"}
+          {emailLoading ? "Loading..." : "Call Demo API"}
         </button>
 
-        {demoApiData && (
+        {emailData && (
           <div className={styles.apiResponse}>
             <h4>Demo API Response:</h4>
-            <pre>{JSON.stringify(demoApiData, null, 2)}</pre>
+            <pre>{JSON.stringify(emailData, null, 2)}</pre>
           </div>
         )}
       </div>
@@ -154,10 +176,10 @@ const TokenDemo: React.FC = () => {
           Inspect Current Tokens
         </button>
 
-        {tokenInspector.tokenInfo && (
+        {tokenInfo && (
           <div className={styles.apiResponse}>
             <h4>Token Information:</h4>
-            <pre>{JSON.stringify(tokenInspector.tokenInfo, null, 2)}</pre>
+            <pre>{JSON.stringify(tokenInfo, null, 2)}</pre>
           </div>
         )}
       </div>
