@@ -631,6 +631,8 @@ export class TokenService extends EventEmitter implements IService {
  * Factory function to create TokenService instance
  * Note: This requires the MSAL instance to be passed in during initialization
  */
-export function createTokenService(msalInstance: IPublicClientApplication): TokenService {
+export function createTokenService(
+  msalInstance: IPublicClientApplication,
+): TokenService {
   return new TokenService(msalInstance);
 }

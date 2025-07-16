@@ -11,7 +11,9 @@ import { IPublicClientApplication } from "@azure/msal-browser";
  * Initialize and register all application services
  * This should be called once during application startup
  */
-export async function initializeServices(msalInstance: IPublicClientApplication): Promise<void> {
+export async function initializeServices(
+  msalInstance: IPublicClientApplication,
+): Promise<void> {
   console.log("Initializing application services...");
 
   // Register TokenService first (other services may depend on it)
