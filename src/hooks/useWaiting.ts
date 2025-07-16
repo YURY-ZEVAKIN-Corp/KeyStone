@@ -1,35 +1,49 @@
 import { useCallback } from "react";
-import { WaitingService } from "../services/WaitingService";
+import { requireService } from "../services/ServiceRegistry";
 import { WaitingOptions } from "../types/waiting.types";
+import type { WaitingServiceClass } from "../services/WaitingService";
 
 /**
- * Custom hook for managing waiting animations
+ * Custom hook for managing waiting animations using the service registry
  * @returns Object with methods to control waiting animations
  */
 export const useWaiting = () => {
+  const getWaitingService = useCallback(() => {
+    return requireService<WaitingServiceClass>("WaitingService");
+  }, []);
+
   /**
    * Show a waiting animation
    * @param options - Configuration options for the waiting animation
    * @returns The ID of the waiting animation (use this to hide it)
    */
-  const showWaiting = useCallback((options?: WaitingOptions): string => {
-    return WaitingService.show(options);
-  }, []);
+  const showWaiting = useCallback(
+    (options?: WaitingOptions): string => {
+      const waitingService = getWaitingService();
+      return waitingService.show(options);
+    },
+    [getWaitingService],
+  );
 
   /**
    * Hide a specific waiting animation by ID
    * @param id - The ID returned from showWaiting()
    */
-  const hideWaiting = useCallback((id: string): void => {
-    WaitingService.hide(id);
-  }, []);
+  const hideWaiting = useCallback(
+    (id: string): void => {
+      const waitingService = getWaitingService();
+      waitingService.hide(id);
+    },
+    [getWaitingService],
+  );
 
   /**
    * Hide all waiting animations
    */
   const clearWaiting = useCallback((): void => {
-    WaitingService.clear();
-  }, []);
+    const waitingService = getWaitingService();
+    waitingService.clear();
+  }, [getWaitingService]);
 
   /**
    * Show waiting during async operation - automatically hides when done
@@ -39,9 +53,10 @@ export const useWaiting = () => {
    */
   const waitFor = useCallback(
     async <T>(promise: Promise<T>, options?: WaitingOptions): Promise<T> => {
-      return WaitingService.withPromise(promise, options);
+      const waitingService = getWaitingService();
+      return waitingService.withPromise(promise, options);
     },
-    [],
+    [getWaitingService],
   );
 
   /**
@@ -49,8 +64,9 @@ export const useWaiting = () => {
    * @returns True if any waiting animations are showing
    */
   const isWaiting = useCallback((): boolean => {
-    return WaitingService.isAnyActive();
-  }, []);
+    const waitingService = getWaitingService();
+    return waitingService.isAnyActive();
+  }, [getWaitingService]);
 
   return {
     showWaiting,

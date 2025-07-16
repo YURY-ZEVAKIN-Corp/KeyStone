@@ -13,14 +13,16 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getRegisteredPages } from "../registry/PageRegistry";
-import { PageService } from "../services/PageService";
+import { requireService } from "../services/ServiceRegistry";
+import type { PageServiceClass } from "../services/PageService";
 
 const PageDemo: React.FC = () => {
   const navigate = useNavigate();
   const registeredPages = getRegisteredPages();
 
   const handleNavigateToPage = (pageId: string, entityId: string) => {
-    const route = PageService.getPageRoute(pageId, entityId);
+    const pageService = requireService<PageServiceClass>("PageService");
+    const route = pageService.getPageRoute(pageId, entityId);
     navigate(route);
   };
 

@@ -1,15 +1,51 @@
-import { useTokenService } from "./useTokenService";
-import { useState, useCallback } from "react";
-import { useAuth } from "./useAuth";
+import { EventEmitter } from "../utils/EventEmitter";
+import { IService, requireService } from "./ServiceRegistry";
 
 // Example API service for making authenticated calls
-export class ApiService {
+class ApiServiceClass extends EventEmitter implements IService {
+  public readonly serviceName = "ApiService";
   private baseUrl: string;
-  private tokenService: any;
 
-  constructor(baseUrl: string, tokenService: any) {
+  constructor(baseUrl: string = process.env.REACT_APP_API_BASE_URL || "") {
+    super();
     this.baseUrl = baseUrl;
-    this.tokenService = tokenService;
+  }
+
+  /**
+   * Initialize the ApiService
+   */
+  public initialize(): void {
+    console.log("ApiService initialized with baseUrl:", this.baseUrl);
+  }
+
+  /**
+   * Dispose the ApiService
+   */
+  public dispose(): void {
+    this.removeAllListeners();
+    console.log("ApiService disposed");
+  }
+
+  /**
+   * Get TokenService from registry
+   */
+  private getTokenService() {
+    return requireService("TokenService") as any;
+  }
+
+  /**
+   * Set base URL for API calls
+   */
+  public setBaseUrl(baseUrl: string): void {
+    this.baseUrl = baseUrl;
+    this.emit("baseUrl:changed", baseUrl);
+  }
+
+  /**
+   * Get current base URL
+   */
+  public getBaseUrl(): string {
+    return this.baseUrl;
   }
 
   /**
@@ -22,11 +58,12 @@ export class ApiService {
   ): Promise<T> {
     try {
       // Get access token
-      const token = await this.tokenService.getAccessToken(scopes);
+      const tokenService = this.getTokenService();
+      const token = await tokenService.getAccessToken(scopes);
 
       // Create request with auth header
       const headers = {
-        ...this.tokenService.createAuthHeader(token),
+        ...tokenService.createAuthHeader(token),
         ...options.headers,
       };
 
@@ -89,118 +126,65 @@ export class ApiService {
   async delete<T>(endpoint: string, scopes?: string[]): Promise<T> {
     return this.apiCall<T>(endpoint, { method: "DELETE" }, scopes);
   }
-}
 
-// Hook for using API service
-export const useApiService = (baseUrl = "https://your-api.com/api") => {
-  const tokenService = useTokenService();
-  const apiService = new ApiService(baseUrl, tokenService);
-
-  return apiService;
-};
-
-// Example hook for Microsoft Graph API calls
-export const useGraphApi = () => {
-  const tokenService = useTokenService();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const callGraphApi = useCallback(
-    async (endpoint: string) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const token = await tokenService.getGraphToken();
-        const headers = tokenService.createAuthHeader(token);
-
-        const response = await fetch(
-          `https://graph.microsoft.com/v1.0${endpoint}`,
-          {
-            headers,
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error(`Graph API call failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setLoading(false);
-        return data;
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Unknown error";
-        setError(errorMessage);
-        setLoading(false);
-        throw err;
-      }
-    },
-    [tokenService],
-  );
-
-  // Specific Graph API methods
-  const getUserProfile = useCallback(() => callGraphApi("/me"), [callGraphApi]);
-  const getUserPhoto = useCallback(
-    () => callGraphApi("/me/photo/$value"),
-    [callGraphApi],
-  );
-  const getUserEmails = useCallback(
-    () => callGraphApi("/me/messages?$top=10"),
-    [callGraphApi],
-  );
-
-  return {
-    callGraphApi,
-    getUserProfile,
-    getUserPhoto,
-    getUserEmails,
-    loading,
-    error,
-  };
-};
-
-// Hook for token inspection and debugging
-export const useTokenInspector = () => {
-  const tokenService = useTokenService();
-  const { user } = useAuth();
-  const [tokenInfo, setTokenInfo] = useState<any>(null);
-
-  const inspectCurrentTokens = useCallback(async () => {
+  /**
+   * Microsoft Graph API call
+   */
+  async callGraphApi<T>(
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<T> {
     try {
-      // Get ID token (contains user info)
-      const idToken = tokenService.getIdToken();
-
-      // Get access token for Graph API
-      const graphToken = await tokenService.getGraphToken();
-
-      const tokenInfo = {
-        idToken: {
-          raw: idToken,
-          decoded: idToken ? tokenService.decodeJwtToken(idToken) : null,
-          expired: idToken ? tokenService.isTokenExpired(idToken) : true,
-        },
-        accessToken: {
-          raw: graphToken,
-          decoded: tokenService.decodeJwtToken(graphToken),
-          expired: tokenService.isTokenExpired(graphToken),
-        },
-        user: user,
+      const tokenService = this.getTokenService();
+      const token = await tokenService.getGraphToken();
+      const headers = {
+        ...tokenService.createAuthHeader(token),
+        ...options.headers,
       };
 
-      setTokenInfo(tokenInfo);
-      console.log("Token Information:", tokenInfo);
-      return tokenInfo;
-    } catch (error) {
-      console.error("Error inspecting tokens:", error);
-      setTokenInfo({
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-  }, [tokenService, user]);
+      const response = await fetch(
+        `https://graph.microsoft.com/v1.0${endpoint}`,
+        {
+          ...options,
+          headers,
+        },
+      );
 
-  return {
-    tokenInfo,
-    inspectCurrentTokens,
-  };
-};
+      if (!response.ok) {
+        throw new Error(`Graph API call failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      this.emit("graph:call:success", { endpoint, result });
+      return result;
+    } catch (error) {
+      console.error("Graph API call error:", error);
+      this.emit("graph:call:error", { endpoint, error });
+      throw error;
+    }
+  }
+
+  /**
+   * Get user profile from Microsoft Graph
+   */
+  async getUserProfile(): Promise<any> {
+    return this.callGraphApi("/me");
+  }
+
+  /**
+   * Get user emails from Microsoft Graph
+   */
+  async getUserEmails(): Promise<any> {
+    return this.callGraphApi(
+      "/me/messages?$select=subject,from,receivedDateTime&$orderby=receivedDateTime desc&$top=10",
+    );
+  }
+}
+
+// Export the class for registration
+export { ApiServiceClass };
+
+// Factory function for service registry
+export function createApiService(baseUrl?: string): ApiServiceClass {
+  return new ApiServiceClass(baseUrl);
+}

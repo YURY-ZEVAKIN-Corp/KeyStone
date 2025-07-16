@@ -4,8 +4,26 @@ import {
   ToastSeverity,
   ToastOptions,
 } from "../types/toast.types";
+import { IService } from "./ServiceRegistry";
 
-class ToastServiceClass extends EventEmitter {
+class ToastServiceClass extends EventEmitter implements IService {
+  public readonly serviceName = "ToastService";
+
+  /**
+   * Initialize the ToastService
+   */
+  public initialize(): void {
+    console.log("ToastService initialized");
+  }
+
+  /**
+   * Dispose the ToastService
+   */
+  public dispose(): void {
+    this.clear();
+    this.removeAllListeners();
+    console.log("ToastService disposed");
+  }
   private generateId(): string {
     return `toast-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   }
@@ -51,4 +69,10 @@ class ToastServiceClass extends EventEmitter {
   }
 }
 
-export const ToastService = new ToastServiceClass();
+// Export the class for registration
+export { ToastServiceClass };
+
+// Factory function for service registry
+export function createToastService(): ToastServiceClass {
+  return new ToastServiceClass();
+}

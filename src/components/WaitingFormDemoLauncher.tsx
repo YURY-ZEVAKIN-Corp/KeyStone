@@ -1,6 +1,5 @@
 import React from "react";
-import { FormService } from "../services/FormService";
-import { ToastService } from "../services/ToastService";
+import { useFormService, useToastService } from "../hooks/useServices";
 import {
   WaitingFormDemoInput,
   WaitingFormDemoOutput,
@@ -11,12 +10,16 @@ import styles from "./WaitingFormDemoLauncher.module.css";
  * Component that demonstrates launching the waiting form demo with different configurations
  */
 export const WaitingFormDemoLauncher: React.FC = () => {
+  const formService = useFormService();
+  const toastService = useToastService();
   const [lastResult, setLastResult] =
     React.useState<WaitingFormDemoOutput | null>(null);
 
   const openFormDemo = async (config: WaitingFormDemoInput) => {
+    if (!formService || !toastService) return;
+
     try {
-      const result = await FormService.openForm<
+      const result = await formService.openForm<
         WaitingFormDemoInput,
         WaitingFormDemoOutput
       >("waitingFormDemo", config);
@@ -24,13 +27,13 @@ export const WaitingFormDemoLauncher: React.FC = () => {
       setLastResult(result);
 
       if (result.success) {
-        ToastService.success(result.message);
+        toastService.success(result.message);
       } else {
-        ToastService.error(result.message);
+        toastService.error(result.message);
       }
     } catch (error) {
       console.error("Form was cancelled or errored:", error);
-      ToastService.info("Form operation was cancelled");
+      toastService.info("Form operation was cancelled");
     }
   };
 

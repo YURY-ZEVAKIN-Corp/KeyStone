@@ -1,30 +1,57 @@
-import { ToastService } from "../services/ToastService";
+import { useCallback } from "react";
+import { requireService } from "../services/ServiceRegistry";
 import { ToastOptions } from "../types/toast.types";
+import type { ToastServiceClass } from "../services/ToastService";
 
 export const useToast = () => {
-  const showSuccess = (message: string, options?: ToastOptions) => {
-    ToastService.success(message, options);
-  };
+  const getToastService = useCallback(() => {
+    return requireService<ToastServiceClass>("ToastService");
+  }, []);
 
-  const showError = (message: string, options?: ToastOptions) => {
-    ToastService.error(message, options);
-  };
+  const showSuccess = useCallback(
+    (message: string, options?: ToastOptions) => {
+      const toastService = getToastService();
+      toastService.success(message, options);
+    },
+    [getToastService],
+  );
 
-  const showWarning = (message: string, options?: ToastOptions) => {
-    ToastService.warning(message, options);
-  };
+  const showError = useCallback(
+    (message: string, options?: ToastOptions) => {
+      const toastService = getToastService();
+      toastService.error(message, options);
+    },
+    [getToastService],
+  );
 
-  const showInfo = (message: string, options?: ToastOptions) => {
-    ToastService.info(message, options);
-  };
+  const showWarning = useCallback(
+    (message: string, options?: ToastOptions) => {
+      const toastService = getToastService();
+      toastService.warning(message, options);
+    },
+    [getToastService],
+  );
 
-  const hideToast = (id: string) => {
-    ToastService.hide(id);
-  };
+  const showInfo = useCallback(
+    (message: string, options?: ToastOptions) => {
+      const toastService = getToastService();
+      toastService.info(message, options);
+    },
+    [getToastService],
+  );
 
-  const clearAll = () => {
-    ToastService.clear();
-  };
+  const hideToast = useCallback(
+    (id: string) => {
+      const toastService = getToastService();
+      toastService.hide(id);
+    },
+    [getToastService],
+  );
+
+  const clearAll = useCallback(() => {
+    const toastService = getToastService();
+    toastService.clear();
+  }, [getToastService]);
 
   return {
     success: showSuccess,

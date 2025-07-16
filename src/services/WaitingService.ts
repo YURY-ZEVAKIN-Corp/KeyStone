@@ -1,8 +1,26 @@
 import { EventEmitter } from "../utils/EventEmitter";
 import { WaitingState, WaitingOptions } from "../types/waiting.types";
+import { IService } from "./ServiceRegistry";
 
-class WaitingServiceClass extends EventEmitter {
+class WaitingServiceClass extends EventEmitter implements IService {
+  public readonly serviceName = "WaitingService";
   private waitingStates: Map<string, WaitingState> = new Map();
+
+  /**
+   * Initialize the WaitingService
+   */
+  public initialize(): void {
+    console.log("WaitingService initialized");
+  }
+
+  /**
+   * Dispose the WaitingService
+   */
+  public dispose(): void {
+    this.clear();
+    this.removeAllListeners();
+    console.log("WaitingService disposed");
+  }
 
   private generateId(): string {
     return `waiting-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -95,4 +113,10 @@ class WaitingServiceClass extends EventEmitter {
   }
 }
 
-export const WaitingService = new WaitingServiceClass();
+// Export the class for registration
+export { WaitingServiceClass };
+
+// Factory function for service registry
+export function createWaitingService(): WaitingServiceClass {
+  return new WaitingServiceClass();
+}

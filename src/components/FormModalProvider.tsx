@@ -17,7 +17,8 @@ import {
   IconButton, // Add IconButton
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close"; // Add CloseIcon import
-import { FormService } from "../services/FormService";
+import { requireService } from "../services/ServiceRegistry";
+import type { FormServiceClass } from "../services/FormService";
 import {
   FormModalState,
   DynamicFormProps,
@@ -125,25 +126,29 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
       setIsLoading(false);
     };
 
-    FormService.on("form:open", handleFormOpen);
-    FormService.on("form:close", handleFormClose);
+    const formService = requireService<FormServiceClass>("FormService");
+    formService.on("form:open", handleFormOpen);
+    formService.on("form:close", handleFormClose);
 
     return () => {
-      FormService.off("form:open", handleFormOpen);
-      FormService.off("form:close", handleFormClose);
+      formService.off("form:open", handleFormOpen);
+      formService.off("form:close", handleFormClose);
     };
   }, [loadFormComponent]);
 
   const handleClose = () => {
-    FormService.rejectForm();
+    const formService = requireService<FormServiceClass>("FormService");
+    formService.rejectForm();
   };
 
   const handleOk = () => {
-    FormService.resolveForm(outputModel);
+    const formService = requireService<FormServiceClass>("FormService");
+    formService.resolveForm(outputModel);
   };
 
   const handleCancel = () => {
-    FormService.rejectForm();
+    const formService = requireService<FormServiceClass>("FormService");
+    formService.rejectForm();
   };
 
   const handleSave = async () => {
@@ -164,11 +169,13 @@ export const FormModalProvider: React.FC<FormModalProviderProps> = ({
   };
 
   const handleYes = () => {
-    FormService.resolveForm({ ...outputModel, result: "yes" });
+    const formService = requireService<FormServiceClass>("FormService");
+    formService.resolveForm({ ...outputModel, result: "yes" });
   };
 
   const handleNo = () => {
-    FormService.resolveForm({ ...outputModel, result: "no" });
+    const formService = requireService<FormServiceClass>("FormService");
+    formService.resolveForm({ ...outputModel, result: "no" });
   };
 
   const handleChange = (newOutputModel: any) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ReactNode } from "react";
-import { WaitingService } from "../services/WaitingService";
+import { requireService } from "../services/ServiceRegistry";
+import type { WaitingServiceClass } from "../services/WaitingService";
 import { WaitingState } from "../types/waiting.types";
 import WaitingSpinner from "./WaitingSpinner";
 import styles from "./WaitingProvider.module.css";
@@ -27,15 +28,17 @@ export const WaitingProvider: React.FC<WaitingProviderProps> = ({
     };
 
     // Subscribe to waiting service events
-    WaitingService.on("waiting:show", handleShow);
-    WaitingService.on("waiting:hide", handleHide);
-    WaitingService.on("waiting:clear", handleClear);
+    const waitingService =
+      requireService<WaitingServiceClass>("WaitingService");
+    waitingService.on("waiting:show", handleShow);
+    waitingService.on("waiting:hide", handleHide);
+    waitingService.on("waiting:clear", handleClear);
 
     // Cleanup listeners on unmount
     return () => {
-      WaitingService.off("waiting:show", handleShow);
-      WaitingService.off("waiting:hide", handleHide);
-      WaitingService.off("waiting:clear", handleClear);
+      waitingService.off("waiting:show", handleShow);
+      waitingService.off("waiting:hide", handleHide);
+      waitingService.off("waiting:clear", handleClear);
     };
   }, []);
 

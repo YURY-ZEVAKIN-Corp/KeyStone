@@ -1,14 +1,38 @@
 import { getPageLoader } from "../registry/PageRegistry";
-import { WaitingService } from "./WaitingService";
 import { PageComponent } from "../types/page.types";
+import { EventEmitter } from "../utils/EventEmitter";
+import { IService, requireService } from "./ServiceRegistry";
 
-export class PageService {
+class PageServiceClass extends EventEmitter implements IService {
+  public readonly serviceName = "PageService";
+
+  /**
+   * Initialize the PageService
+   */
+  public initialize(): void {
+    console.log("PageService initialized");
+  }
+
+  /**
+   * Dispose the PageService
+   */
+  public dispose(): void {
+    this.removeAllListeners();
+    console.log("PageService disposed");
+  }
+
+  /**
+   * Get WaitingService from registry
+   */
+  private getWaitingService() {
+    return requireService("WaitingService") as any;
+  }
   /**
    * Get the page loader function for a given page ID
    * @param pageId - The ID of the page to load (from PageRegistry)
    * @returns The page loader function
    */
-  static getPageLoader(pageId: string) {
+  getPageLoader(pageId: string) {
     return getPageLoader(pageId);
   }
 
@@ -18,7 +42,7 @@ export class PageService {
    * @param pageEntityId - The entity ID for the page
    * @returns The route path
    */
-  static getPageRoute(pageType: string, pageEntityId: string): string {
+  getPageRoute(pageType: string, pageEntityId: string): string {
     return `/page/${pageType}/${pageEntityId}`;
   }
 
@@ -27,7 +51,7 @@ export class PageService {
    * @param pageId - The ID of the page to check
    * @returns True if the page exists, false otherwise
    */
-  static pageExists(pageId: string): boolean {
+  pageExists(pageId: string): boolean {
     try {
       getPageLoader(pageId);
       return true;
@@ -42,13 +66,14 @@ export class PageService {
    * @param waitingMessage - Message to show during loading
    * @returns Promise that resolves with the page component
    */
-  static async loadPageWithWaiting(
+  async loadPageWithWaiting(
     pageId: string,
     waitingMessage = "Loading page...",
   ): Promise<PageComponent> {
     const loader = getPageLoader(pageId);
+    const waitingService = this.getWaitingService();
 
-    return WaitingService.withPromise(loader(), {
+    return waitingService.withPromise(loader(), {
       message: waitingMessage,
       overlay: true,
       size: "large",
@@ -62,17 +87,26 @@ export class PageService {
    * @param waitingMessage - Message to show during loading
    * @returns Promise that resolves with array of page components
    */
-  static async loadPagesWithWaiting(
+  async loadPagesWithWaiting(
     pageIds: string[],
     waitingMessage = "Loading pages...",
   ): Promise<PageComponent[]> {
     const loadPromises = pageIds.map((pageId) => getPageLoader(pageId)());
+    const waitingService = this.getWaitingService();
 
-    return WaitingService.withPromise(Promise.all(loadPromises), {
+    return waitingService.withPromise(Promise.all(loadPromises), {
       message: waitingMessage,
       overlay: true,
       size: "large",
       theme: "secondary",
     });
   }
+}
+
+// Export the class for registration
+export { PageServiceClass };
+
+// Factory function for service registry
+export function createPageService(): PageServiceClass {
+  return new PageServiceClass();
 }

@@ -8,7 +8,8 @@ import {
   Stack,
   Portal,
 } from "@mui/material";
-import { ToastService } from "../services/ToastService";
+import { requireService } from "../services/ServiceRegistry";
+import type { ToastServiceClass } from "../services/ToastService";
 import { ToastMessage, ToastSeverity } from "../types/toast.types";
 
 interface ToastProviderProps {
@@ -59,14 +60,15 @@ const ToastProvider: React.FC<ToastProviderProps> = ({
       setToasts([]);
     };
 
-    ToastService.on("toast:show", handleShowToast);
-    ToastService.on("toast:hide", handleHideToast);
-    ToastService.on("toast:clear", handleClearAll);
+    const toastService = requireService<ToastServiceClass>("ToastService");
+    toastService.on("toast:show", handleShowToast);
+    toastService.on("toast:hide", handleHideToast);
+    toastService.on("toast:clear", handleClearAll);
 
     return () => {
-      ToastService.off("toast:show", handleShowToast);
-      ToastService.off("toast:hide", handleHideToast);
-      ToastService.off("toast:clear", handleClearAll);
+      toastService.off("toast:show", handleShowToast);
+      toastService.off("toast:hide", handleHideToast);
+      toastService.off("toast:clear", handleClearAll);
     };
   }, []);
 

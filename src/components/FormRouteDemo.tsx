@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FormService } from "../services/FormService";
+import { useFormService } from "../hooks/useFormService";
 
 const FormRouteDemo: React.FC = () => {
   const { formType, formEntityId } = useParams();
   const navigate = useNavigate();
+  const { openForm } = useFormService();
 
   useEffect(() => {
     if (formType && formEntityId) {
       // Open the form modal with the given type and entity ID
-      FormService.openForm(formType, {}, undefined, formEntityId)
+      openForm(formType, {}, undefined, formEntityId)
         .then(() => {
           // After form is closed, navigate away (e.g., to dashboard or previous page)
           navigate(-1);
