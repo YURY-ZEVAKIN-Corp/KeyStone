@@ -47,6 +47,17 @@ export const formRegistry: FormRegistry = {
       noButton: true,
     },
   },
+  waitingFormDemo: {
+    loader: () => import("../forms/WaitingFormDemo"),
+    displayName: "Waiting Animation Demo Form",
+    buttonConfig: {
+      okButton: false,
+      cancelButton: false,
+      saveButton: false,
+      yesButton: false,
+      noButton: false,
+    },
+  },
   // New forms can be added here
   // exampleForm: {
   //   loader: () => import('../forms/ExampleForm'),

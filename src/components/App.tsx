@@ -5,6 +5,7 @@ import { msalConfig } from "../authConfig";
 import Login from "./Login";
 import { FormModalProvider } from "./FormModalProvider";
 import ToastProvider from "./ToastProvider";
+import WaitingProvider from "./WaitingProvider";
 import styles from "./App.module.css";
 
 /**
@@ -22,11 +23,13 @@ const App: React.FC = () => {
   return (
     <MsalProvider instance={msalInstance}>
       <ToastProvider>
-        <FormModalProvider>
-          <div className={styles.App} role="main">
-            <Login />
-          </div>
-        </FormModalProvider>
+        <WaitingProvider>
+          <FormModalProvider>
+            <div className={styles.App} role="main">
+              <Login />
+            </div>
+          </FormModalProvider>
+        </WaitingProvider>
       </ToastProvider>
     </MsalProvider>
   );

@@ -12,6 +12,8 @@ import { FormDemo } from "./FormDemo";
 import { ToastDemo } from "./ToastDemo";
 import { TokenRefreshDemo } from "./TokenRefreshDemo";
 import { TokenRefreshTroubleshooting } from "./TokenRefreshTroubleshooting";
+import WaitingDemo from "./WaitingDemo";
+import WaitingFormDemoLauncher from "./WaitingFormDemoLauncher";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -72,6 +74,8 @@ const Dashboard: React.FC = () => {
     { text: "Token Troubleshooting", path: "/token-troubleshooting" },
     { text: "Forms Demo", path: "/forms" },
     { text: "Toast Demo", path: "/toasts" },
+    { text: "Waiting Demo", path: "/waiting" },
+    { text: "Waiting Form Demo", path: "/waiting-forms" },
     { text: "Pages Demo", path: "/pages" },
     { text: "Form Route Demo", path: "/form/buttonDemoForm/preview" },
   ];
@@ -175,6 +179,11 @@ const Dashboard: React.FC = () => {
               />
               <Route path="/forms" element={<FormDemo />} />
               <Route path="/toasts" element={<ToastDemo />} />
+              <Route path="/waiting" element={<WaitingDemo />} />
+              <Route
+                path="/waiting-forms"
+                element={<WaitingFormDemoLauncher />}
+              />
               <Route path="/pages" element={<PageDemo />} />
               <Route
                 path="/form/:formType/:formEntityId"
