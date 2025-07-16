@@ -1,5 +1,7 @@
 # Project Goal
 
+KeyStone is more than just a project—it's the foundation for building modern web applications with speed, reliability, and best practices at its core. By starting with KeyStone, you embark on a journey to streamline development, reduce technical debt, and empower teams to focus on delivering real business value. This work lays the groundwork for scalable, maintainable, and user-centric products, making it an essential starting point for anyone serious about web development excellence.
+
 This is the result of Sprint 0. I want to share best practices in Web Development and help people bootstrap their own products faster.
 Usually, all this work is done partially, step by step, during the process of creating system functionality according to the sprint backlog. Additionally, many technical and architectural tasks provide zero business value in the eyes of the Product Owner and Scrum Master.
 
@@ -15,6 +17,24 @@ The project uses React for building user interfaces, JavaScript (ES6+) as the pr
 - **Babel** – JavaScript transpiler.
 - **ESLint** – Linting tool for code quality.
 - **Jest** – Testing framework.
+
+# KeyStone fuctionality
+
+- **Dynamic Forms** – Easily create and manage forms with dynamic fields and validation.
+- **Dynamic Pages** – Render pages based on data and configuration for flexible navigation.
+- **Reusable UI Components** – Modular React components for rapid development.
+- **State Management** – Centralized state handling using React Context API.
+- **Form Validation** – Built-in validation logic for user input.
+- **Responsive Layouts** – Mobile-friendly design using CSS Flexbox and Grid.
+- **Routing** – Client-side navigation with React Router.
+- **User Menu Template** – Predefined menu structure for user navigation.
+- **Wait Animation** – Loading spinners and animations for improved UX during async operations.
+- **API Integration** – Fetch and display data from RESTful APIs.
+- **Error Handling** – User-friendly error messages and fallback UI.
+- **Unit Testing** – Core components and logic covered by Jest tests.
+- **Linting & Formatting** – Automated code quality checks with ESLint and Prettier.
+- **User Authentication** – Secure user login and identity management using Microsoft Entra ID.
+- **Toast Messages** – Display brief notifications for user actions and system events.
 
 # Getting Started with Create Keystone App
 
